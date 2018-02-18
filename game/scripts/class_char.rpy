@@ -120,6 +120,7 @@ init -20 python:
             self.cha = stats['cha'] if 'cha' in stats else 0
             self.hp = stats['hp'] if 'hp' in stats else 0
             self.energy = stats['energy'] if 'energy' in stats else 0
+            self.exp = stats['exp'] if 'exp' in stats else 0
 
         def normalize(self):
             self.str = min(max(self.str,1),18)
@@ -129,20 +130,22 @@ init -20 python:
             self.wis = min(max(self.wis,1),18)
             self.cha = min(max(self.cha,1),18)
             self.hp = min(max(self.hp,0),1000)
-            self.energy = min(max(self.mana,0), self.maxmana)
-
+            self.energy = min(max(self.energy,0),2000)
+            self.exp = min(max(self.exp,0),1000000)
+            
         @classmethod
         def random(cls):
             stats = cls()
             #TODO нормальная генерация
-            self.str = rand(4,18)
-            self.dex = rand(4,18)
-            self.con = rand(4,18)
-            self.int = rand(4,18)
-            self.wis = rand(4,18)
-            self.cha = rand(4,18)
-            self.hp = rand(4,18)
+            self.str = rand(4,20)
+            self.dex = rand(4,20)
+            self.con = rand(4,20)
+            self.int = rand(4,20)
+            self.wis = rand(4,20)
+            self.cha = rand(4,20)
+            self.hp = rand(4,20)
             self.energy = 1000
+            self.exp = 0
             return stats
 
     class Char(object):
@@ -159,7 +162,7 @@ init -20 python:
         maleLastNames = {'Крестьянин':100, 'Селянин':50}
         femaleLastNames = {'Крестьянка':50, 'Селянка':50}
         
-        def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = [], event = ''):
+        def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = [], state = [], event = ''):
             if body is None:
                 body = Body()
             if stats is None:
@@ -170,10 +173,6 @@ init -20 python:
                 inventory = []
             if skills is None:
                 skills = []
-            if friends is None:
-                friends = []
-            if enemies is None:
-                enemies = []
 
             self.fname = fname
             self.lname = lname
@@ -191,6 +190,7 @@ init -20 python:
             self.location = location
             self.money = money
             self.event = event
+            self.state = state
             self.say = Character (self.fullName(), kind=adv, dynamic = False, color = self.color, show_side_image = Image(self.picto, xalign=0.01, yalign=0.99), window_left_padding = 170)
             self.speak = Character (self.fullName(), kind=adv, dynamic = False, color = self.color)
             config.side_image_tag = self.picto
@@ -230,3 +230,84 @@ init -20 python:
 
         def fullName(self):
             return self.fname + ' ' + self.lname
+########################################################################################
+        def getSTR(self):
+            return self.stats.str
+            
+        def getSTRmod(self):
+            return int((self.getSTR() - 10)/2)
+########################################################################################            
+        def getDEX(self):
+            return self.stats.dex
+            
+        def getDEXmod(self):
+            return int((self.getDEX() - 10)/2)
+########################################################################################
+        def getCON(self):
+            return self.stats.con
+            
+        def getCONmod(self):
+            return int((self.getCON() - 10)/2)
+########################################################################################
+        def getINT(self):
+            return self.stats.int
+            
+        def getINTmod(self):
+            return int((self.getINT() - 10)/2)
+########################################################################################
+        def getWIS(self):
+            return self.stats.wis
+            
+        def getWISmod(self):
+            return int((self.getWIS() - 10)/2)
+########################################################################################
+        def getCHA(self):
+            return self.stats.cha
+            
+        def getCHAmod(self):
+            return int((self.getCHA() - 10)/2)
+########################################################################################
+        def getHP(self):
+            return self.stats.hp
+        
+        def setHP(self,amount):
+            self.stats.hp = int(amount)
+            
+        def incHP(self,amount):
+            self.stats.hp += int(amount)
+########################################################################################
+        def getEnergy(self):
+            return self.stats.energy
+            
+        def setEnergy(self,amount):
+            self.stats.energy = int(amount)
+            
+        def incEnergy(self,amount):
+            self.stats.energy += int(amount)
+########################################################################################
+        def getPerception(self):
+            if 'alarm' in self.state:
+                return dice(self) + self.getWISmod()
+            else:
+                return 10 + self.getWISmod()
+########################################################################################
+        def getSneak(self):
+            if 'sneak' in self.state:
+                return dice(self) + self.getDEXmod()
+            else:
+                return 0
+########################################################################################
+        def getUnlock(self):
+            return dice(self) + self.getDEXmod()
+########################################################################################
+        def getDisarmINT(self):
+            return dice(self) + self.getINTmod()
+            
+        def getDisarmDEX(self):
+            return dice(self) + self.getDEXmod()
+########################################################################################
+        def getWeight(self):
+            return self.getSTR()*15
+            
+            
+            

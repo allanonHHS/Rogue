@@ -19,12 +19,12 @@ init -1 python hide:
     config.developer = True
     config.hard_rollback_limit = 0
     config.imagemap_cache = False
-    config.save_physical_size=False
+    # config.save_physical_size=False
     
     ## Эти управляют шириной и высотой экрана.
 
-    config.screen_width = 1280
-    config.screen_height = 720
+    config.screen_width = 1980
+    config.screen_height = 1024
 
     ## Это управляет заголовком окна, когда Ren'Py
     ## запущен в оконном режиме.

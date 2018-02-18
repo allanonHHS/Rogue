@@ -172,14 +172,14 @@ screen nvl:
 # http://www.renpy.org/doc/html/screen_special.html#main-menu
 
 screen main_menu:
-
     # Это заменяет другие меню.
     tag menu
 
     # Фон главного меню.
-    window:
-        style "mm_root"
-
+    # window:
+        # style "mm_root"
+    add '#000000'
+    add 'images/intro.png'
     # Кнопки главного меню.
     frame:
         style_group "mm"

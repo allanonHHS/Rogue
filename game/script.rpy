@@ -6,12 +6,17 @@
 # Определение персонажей игры.
 init:
     define me = Character("Разработчик", who_color="#79AEE8")
-    $ curloc = '' # Курлок просто должна быть объявлена
+    image black = '#000000'
     
+    python:
+        curloc = '' # Курлок просто должна быть объявлена
+        allDoors = []
+        allLocks = []
+        allTraps = []
+        prevloc = ''
 # Игра начинается здесь.
 label start:
-    me 'Тестовое сообщение'
-
-    $ move(home)
-    
+    $ curloc = home
+    jump generatePlayer
+    # $ move(home)
     return

@@ -6,6 +6,7 @@ init 10 python:
             self.description = description # Массив описаний.
             self.image = image # Картиинка для показа
             self.items = [] # Массив предметов в локации
+            self.doors = [] # Массив дверей в локации
             self.events = [] # Массив возможных эвентов в локации
             self.type = type # Тип локации
             self.people = [] # Массив людей в локации
@@ -15,6 +16,36 @@ init 10 python:
         def addNav(self, locObj):
             if locObj not in self.navigation:
                 self.navigation.append(locObj)
+                
+        def addDoor(self, type, locObj):
+            tempArr = []
+            doorFound = 0
+            for door in self.doors:
+                if door.navigation == locObj:
+                    return False
+                    
+            for door in allDoors:
+                if door.type == type:
+                    tempArr.append(door)
+            tempDoor = copy.copy(choice(tempArr))
+            tempDoor.addNav(locObj)
+            self.doors.append(tempDoor)
+            
+            # Создаём дубликат двери на локации, куда ведёт наша дверь.
+            for door in locObj.doors:
+                if door.navigation == self:
+                    doorFound = 1
+                    door = copy.copy(tempDoor)
+                    door.addNav(self)
+                    
+            # Если двери нет, создаём такую же дверь с той стороны        
+            if doorFound == 0:
+                anotherDoor = copy.copy(tempDoor)
+                anotherDoor.addNav(self)
+                locObj.doors.append(anotherDoor)
+
+            
+            
 # Генерация локаций
     home = Location(
         id = 'home',
@@ -29,31 +60,21 @@ init 10 python:
         description = ['Обычный сундук', 'Я храню в нём награбленное и свои личные вещи'],
         type = 'private',
         image = 'images/locations/chest.png')
+        
+    street = Location(
+        id = 'street',
+        name = 'Улица',
+        description = ['Улица, как улица', 'Никого особо не видно.'],
+        type = 'street',
+        image = 'images/locations/village.png')
 
-# Проставление навигаций
+# Проставление прямых навигаций
     home.addNav(chest) # Из дома мы можем переместится в сундук
     chest.addNav(home) # Из сундука в дом
 
-# Скрин, показывающй все локации
-screen location(locObj):
-    add locObj.image # Отображам картинку
-    
-    frame xpos 0.01 ypos 0.01: # Слева отображаем имя локации
-        text(locObj.name) 
-    
-    frame xpos 0.01 ypos 0.9: # Внизу перебираем массив описаний и выводим строчку за строчкой
-        has vbox
-        for x in locObj.description:
-            text(x)
-            
-    fixed xpos 0.9: # Перебираем массив локаций для перемещения, и делаем кнопки для каждой
-        vbox:
-            for x in locObj.navigation:
-                textbutton x.name action [Function(move, x)]
-                
-# Костыль, с помощью которого вызываем скрин локаций
-label location_label:
-    call screen location(curloc)
+# Проставление дверей:
+    street.addDoor('simpleDoor', home)
+    home.addDoor('simpleDoor', street)
     
                 
             
