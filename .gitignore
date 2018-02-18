@@ -1,0 +1,9 @@
+*.rpyc
+*.save
+*.png
+*.webm
+*.ini
+game/saves/persistent
+*.rpyb
+log.txt
+*.swp
