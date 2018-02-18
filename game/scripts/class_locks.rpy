@@ -1,7 +1,7 @@
 init 8 python:
     import copy
     class Lock:
-        def __init__(self, id, name, description, image, durability = 10, difficulty = 1, type = 'simpleLock',state = 'closed', event = ''):
+        def __init__(self, id, name, description, image, durability = 10, difficulty = 1, type = 'simpleLock',state = 'closed', do = '', rescue = 'dex'):
             self.id = id 
             self.name = name
             self.description = description
@@ -10,7 +10,8 @@ init 8 python:
             self.difficulty = difficulty
             self.type = type
             self.state = state
-            self.event = ''
+            self.rescue = rescue
+            self.do = do
         
         def unlock(self):
             self.state = 'open'
@@ -30,7 +31,7 @@ init 8 python:
             
     
     class Trap:
-        def __init__(self, id, name, description, image, event = '', durability = 10, difficulty = 1, type = 'simpleTrap', state = 'armed', found = False):
+        def __init__(self, id, name, description, image, do = '', durability = 10, difficulty = 1, type = 'simpleTrap', state = 'armed', found = False, rescue = 'dex' ):
             self.id = id 
             self.name = name
             self.description = description
@@ -40,7 +41,8 @@ init 8 python:
             self.type = type
             self.state = state
             self.found = found
-            self.event = event
+            self.do = do
+            self.rescue = rescue
             
         def disarm(self):
             self.state = 'disarmed'
@@ -58,6 +60,6 @@ init 8 python:
         image = 'images/noimage.gif',
         type = 'simpleTrap',
         difficulty = 15,
-        event = 'trap_simpleTrap'
+        do = 'trap_simpleTrap'
         )
     allTraps.append(simpleTrap)

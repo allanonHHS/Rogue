@@ -7,7 +7,7 @@ init 10 python:
             self.image = image # Картиинка для показа
             self.items = [] # Массив предметов в локации
             self.doors = [] # Массив дверей в локации
-            self.events = [] # Массив возможных эвентов в локации
+            self.dos = [] # Массив возможных эвентов в локации
             self.type = type # Тип локации
             self.people = [] # Массив людей в локации
             self.navigation = [] # Массив локаций, в которые можно перейти
@@ -28,6 +28,7 @@ init 10 python:
                 if door.type == type:
                     tempArr.append(door)
             tempDoor = copy.copy(choice(tempArr))
+            tempDoor.location = self
             tempDoor.addNav(locObj)
             self.doors.append(tempDoor)
             
@@ -37,11 +38,13 @@ init 10 python:
                     doorFound = 1
                     door = copy.copy(tempDoor)
                     door.addNav(self)
+                    door.location = locObj
                     
             # Если двери нет, создаём такую же дверь с той стороны        
             if doorFound == 0:
                 anotherDoor = copy.copy(tempDoor)
                 anotherDoor.addNav(self)
+                anotherDoor.location = locObj
                 locObj.doors.append(anotherDoor)
 
             

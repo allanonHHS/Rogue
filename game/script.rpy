@@ -9,6 +9,7 @@ init:
     image black = '#000000'
     
     python:
+        development = 1
         curloc = '' # Курлок просто должна быть объявлена
         allDoors = []
         allLocks = []

@@ -166,11 +166,11 @@ init -1 python hide:
 
     ## Установите False если в игре нет звуковых эффектов.
 
-    config.has_sound = True
+    config.has_sound = False
 
     ## Установите False если в игре нет музыки.
 
-    config.has_music = True
+    config.has_music = False
 
     ## Установите True если в игре есть озвучка.
 

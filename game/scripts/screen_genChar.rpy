@@ -33,7 +33,7 @@ label generatePlayer:
         
         player.setHP(10 + player.getCONmod())
         player.setEnergy(500 + player.getCONmod()*100 + player.getSTRmod()*100)
-    
+        player.togglePerception()
         move(home)
         
 

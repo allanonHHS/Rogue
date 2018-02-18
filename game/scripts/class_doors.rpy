@@ -1,7 +1,7 @@
 init 9 python:
     import copy
     class Door:
-        def __init__(self, id, name, description, image, durability = 100, type = 'simpleDoor',state = 'open', difficulty = 0, hidden = False):
+        def __init__(self, id, name, description, image, durability = 100, type = 'simpleDoor',state = 'open', difficulty = 0, hidden = False, safe = False):
             self.id = id 
             self.name = name
             self.description = description
@@ -10,9 +10,11 @@ init 9 python:
             self.difficulty = difficulty
             self.container = []
             self.navigation = ''
+            self.location = ''
             self.type = type
             self.hidden = hidden
             self.state = state
+            self.safe = safe
         
         def addNav(self, locObj):
             self.navigation = locObj
@@ -49,8 +51,22 @@ init 9 python:
             tempArr = []
             for x in self.container:
                 if isinstance(x, Trap):
-                    tempArr.append(x)
+                    if x.state == 'armed':
+                        tempArr.append(x)
             return tempArr
+            
+        def setSafe(self):
+            self.safe = True
+            for door in self.navigation.doors:
+                if door.navigation == self.location:
+                    door.safe = True
+                    
+        def checkTrap(self, char):
+            for item in self.container:
+                if isinstance(item, Trap):
+                    if item.difficulty < char.getPerception():
+                        item.found = True
+
                     
             
     

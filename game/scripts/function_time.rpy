@@ -77,19 +77,18 @@ init -3 python:
     def changetime(change, *args):
         global minute, check_minute, hour, ptime, weekday, number, year, month, mtime
         
-        if len(args) == 0:
-            if change < 30:
-                timeMod = 1
-                if 'sneak' in player.state:
-                    timeMod = timeMod*2
-                    
-                if 'alarm' in player.state:
-                    timeMod = timeMod*2
-                    
-                if 'overweight' in player.state:
-                    timeMod = timeMod*2
-                    
-                change = change*timeMod
+        if change < 30:
+            timeMod = 1
+            if 'sneak' in player.state:
+                timeMod = timeMod*2
+                
+            if 'alarm' in player.state:
+                timeMod = timeMod*2
+                
+            if 'overweight' in player.state:
+                timeMod = timeMod*2
+                
+            change = change*timeMod
         
         while change != 0:
             tempChange = min(10,change)

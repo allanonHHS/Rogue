@@ -1,5 +1,11 @@
 init 10 python:
     def doorAction(door):
+        if door.safe == True:
+            return [Function(move, door.getLoc())]
+        else:
+            return [Show('unlock', None, door)]
+            
+    def doorEnter(door):
         for x in door.container:
             if isinstance(x, Lock):
                 if x.state == 'closed':
@@ -9,14 +15,38 @@ init 10 python:
                     return [Show('unlock', None, door)]
             if isinstance(x, Trap):
                 if x.state == 'armed' and x.found == False:
-                    return [Function(x.disarm), Jump(x.event)]
-        return [Function(move, door.getLoc())]
+                    return [Function(clrscr), Function(x.disarm), Jump(x.do)]
+        return [Function(door.setSafe), Function(move, door.getLoc())]
+
     
     def unlock(lock, door):
-        if lock.difficulty < player.getUnlock():
-            return [Function(lock.unlock), Function(changetime, 10), Show('unlockSuccess'),  Show('unlock', None, door)]
-        else:
-            return [Function(changetime, 10), Show('unlockFail')]
+        if isinstance(lock, Lock):
+            if lock.difficulty < player.getUnlock():
+                return [Function(lock.unlock), Function(changetime, 10), Show('unlockSuccess'),  Show('unlock', None, door)]
+            else:
+                if lock.do != '' and player.checkRescue(lock) == False:
+                    return [Function(clrscr), Function(lock.unlock), Jump(lock.do)]
+                else:
+                    return [Function(changetime, 10), Show('unlockFail')]
+        return NullAction
+        
+    def disarm(trap, door):
+        if isinstance(trap, Trap):
+            if player.getDisarmINT() > trap.difficulty and player.getDisarmDEX() > trap.difficulty:
+                return [Function(trap.disarm), Function(changetime, 10), Show('unlockSuccess'),  Show('unlock', None, door)]
+            else:
+                if trap.do != '' and player.checkRescue(trap) == False:
+                    return [Function(changetime, 10), Show('unlockFail')]
+                else:
+                    return [Function(clrscr), Function(trap.disarm), Jump(trap.do)]
+        return NullAction
+                    
+    def checkDoorTrap(door):
+        for item in door.container:
+            if isinstance(item, Trap):
+                if item.difficulty < player.getPerception():
+                    item.find()
+
     
 # Скрин, показывающй все локации
 screen location(locObj):
@@ -32,7 +62,7 @@ screen location(locObj):
             
     fixed xpos 0.83 ypos 0.1: # Перебираем массив локаций для перемещения, и делаем кнопки для каждой
         vbox:
-            textbutton 'Ждать' xmaximum 300 xminimum 300 action [Function(changetime, 10, 'pure')]
+            textbutton 'Осмотреться' xmaximum 300 xminimum 300 action [Function(changetime, 10)]
             for x in locObj.navigation:
                 textbutton x.name xmaximum 300 xminimum 300 action [Function(move, x)]
                 
@@ -65,19 +95,22 @@ screen stats(locObj):
 screen unlock(door):
     frame xpos 0.5 ypos 0.5 xalign 0.5 yalign 0.5:
         has vbox
-        textbutton 'Уйти' action Function(move, curloc)
+        # if development == 1:
+            # text('Замки ' + str(len(door.getLocks())))
+            # text('Ловушки ' + str(len(door.getTraps())))
+        textbutton 'Осмотреть' xmaximum 250 xminimum 250 action [Function(changetime, 10), Show('unlock', None, door)]
         for x in door.container:
             if isinstance(x, Lock):
                 if x.state == 'closed':
-                    hbox:
-                        text(x.name + ':' + str(x.difficulty)) xmaximum 250 xminimum 250
-                        textbutton 'взлом' action unlock(x, door)
+                    textbutton x.name + ':' + str(x.difficulty) action unlock(x, door) xmaximum 250 xminimum 250
                         
             if isinstance(x, Trap):
-                if x.state == 'armed' and x.found == True:
-                    hbox:
-                        text(x.name + ':' + str(x.difficulty)) xmaximum 250 xminimum 250
-                        textbutton 'взлом' action unlock(x, door)
+                if x.state == 'armed':
+                    textbutton x.name + ':' + str(x.difficulty) action disarm(x, door) xmaximum 250 xminimum 250
+                        
+        if len(door.getLocks()) == 0:
+            textbutton 'Войти' xmaximum 250 xminimum 250 action doorEnter(door)
+        textbutton 'Уйти' xmaximum 250 xminimum 250 action Function(move, curloc)
                         
 screen displayTime:
     vbox xalign 0.99 yalign 0.0:

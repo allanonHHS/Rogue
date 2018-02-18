@@ -162,7 +162,7 @@ init -20 python:
         maleLastNames = {'Крестьянин':100, 'Селянин':50}
         femaleLastNames = {'Крестьянка':50, 'Селянка':50}
         
-        def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = [], state = [], event = ''):
+        def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = [], state = [], do = ''):
             if body is None:
                 body = Body()
             if stats is None:
@@ -189,7 +189,7 @@ init -20 python:
             self.picto = picto
             self.location = location
             self.money = money
-            self.event = event
+            self.do = do
             self.state = state
             self.say = Character (self.fullName(), kind=adv, dynamic = False, color = self.color, show_side_image = Image(self.picto, xalign=0.01, yalign=0.99), window_left_padding = 170)
             self.speak = Character (self.fullName(), kind=adv, dynamic = False, color = self.color)
@@ -309,5 +309,38 @@ init -20 python:
         def getWeight(self):
             return self.getSTR()*15
             
+        def checkRescue(self, item):
+            if isinstance(item, Trap):
+                if item.rescue == 'str':
+                    if item.difficulty <  dice(self) + self.getSTRmod():
+                        return True
+                elif item.rescue == 'dex':
+                    if item.difficulty <  dice(self) + self.getDEXmod():
+                        return True
+                elif item.rescue == 'con':
+                    if item.difficulty <  dice(self) + self.getCONmod():
+                        return True
+                elif item.rescue == 'int':
+                    if item.difficulty <  dice(self) + self.getINTmod():
+                        return True
+                elif item.rescue == 'wis':
+                    if item.difficulty <  dice(self) + self.getWISmod():
+                        return True
+                elif item.rescue == 'cha':
+                    if item.difficulty <  dice(self) + self.getCHAmod():
+                        return True
+            return False
+            
+        def toggleSneak(self):
+            if 'sneak' in self.state:
+                self.state.remove('sneak')
+            else:
+                self.state.append('sneak')
+                
+        def togglePerception(self):
+            if 'alarm' in self.state:
+                self.state.remove('alarm')
+            else:
+                self.state.append('alarm')
             
             
