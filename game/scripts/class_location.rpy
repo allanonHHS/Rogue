@@ -77,7 +77,7 @@ init 10 python:
 
 # Проставление дверей:
     street.addDoor('simpleDoor', home)
-    home.addDoor('simpleDoor', street)
+    # home.addDoor('simpleDoor', street)
     
                 
             

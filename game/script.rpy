@@ -14,6 +14,7 @@ init:
         allDoors = []
         allLocks = []
         allTraps = []
+        allItems = []
         prevloc = ''
 # Игра начинается здесь.
 label start:

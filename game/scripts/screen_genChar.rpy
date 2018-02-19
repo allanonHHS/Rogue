@@ -13,7 +13,9 @@ label generatePlayer:
             wis = 16,
             cha = 15,
             hp = 0,
-            energy = 0
+            energy = 0,
+            exp = 0,
+            
         )
 
         player = Char(
@@ -31,9 +33,11 @@ label generatePlayer:
             skills = []
         )
         
-        player.setHP(10 + player.getCONmod())
+        player.setHP(8 + player.getCONmod())
         player.setEnergy(500 + player.getCONmod()*100 + player.getSTRmod()*100)
         player.togglePerception()
+        genItems()
+        # testChar.autoLevel(rand(1,20))
         move(home)
         
 

@@ -121,46 +121,97 @@ init -20 python:
             self.hp = stats['hp'] if 'hp' in stats else 0
             self.energy = stats['energy'] if 'energy' in stats else 0
             self.exp = stats['exp'] if 'exp' in stats else 0
+            self.maxHP = stats['maxHP'] if 'maxHP' in stats else 0
+            self.level = stats['level'] if 'level' in stats else 0
 
         def normalize(self):
-            self.str = min(max(self.str,1),18)
-            self.dex = min(max(self.dex,1),18)
-            self.con = min(max(self.con,1),18)
-            self.int = min(max(self.int,1),self.maxlust)
-            self.wis = min(max(self.wis,1),18)
-            self.cha = min(max(self.cha,1),18)
-            self.hp = min(max(self.hp,0),1000)
+            self.str = min(max(self.str,8),20)
+            self.dex = min(max(self.dex,8),20)
+            self.con = min(max(self.con,8),20)
+            self.int = min(max(self.int,8),20)
+            self.wis = min(max(self.wis,8),20)
+            self.cha = min(max(self.cha,8),20)
+            self.hp = min(max(self.hp,0),self.maxHP)
             self.energy = min(max(self.energy,0),2000)
             self.exp = min(max(self.exp,0),1000000)
+            self.maxHP = min(max(self.maxHP,0), 8 + (self.con-10)/2 + (6 + (self.con-10)/2)*(self.level - 1))
+            self.level = min(max(self.maxHP,0),1000)
             
         @classmethod
         def random(cls):
             stats = cls()
+            x = 0
             #TODO нормальная генерация
-            self.str = rand(4,20)
-            self.dex = rand(4,20)
-            self.con = rand(4,20)
-            self.int = rand(4,20)
-            self.wis = rand(4,20)
-            self.cha = rand(4,20)
-            self.hp = rand(4,20)
-            self.energy = 1000
-            self.exp = 0
+            stats.str = 9
+            stats.dex = 9
+            stats.con = 9
+            stats.int = 9
+            stats.wis = 9
+            stats.cha = 9
+            while x < 20:
+                tempChoce = randint(1,6)
+                if tempChoce == 1:
+                    if stats.str < 14:
+                        stats.str += 1
+                        x += 1
+                    elif stats.str < 16:
+                        stats.str += 1
+                        x += 2
+                elif tempChoce == 2:
+                    if stats.dex < 14:
+                        stats.dex += 1
+                        x += 1
+                    elif stats.dex < 16:
+                        stats.dex += 1
+                        x += 2
+                elif tempChoce == 3:
+                    if stats.con < 14:
+                        stats.con += 1
+                        x += 1
+                    elif stats.con < 16:
+                        stats.con += 1
+                        x += 2
+                elif tempChoce == 4:
+                    if stats.int < 14:
+                        stats.int += 1
+                        x += 1
+                    elif stats.int < 16:
+                        stats.int += 1
+                        x += 2
+                elif tempChoce == 5:
+                    if stats.wis < 14:
+                        stats.wis += 1
+                        x += 1
+                    elif stats.wis < 16:
+                        stats.wis += 1
+                        x += 2
+                elif tempChoce == 6:
+                    if stats.cha < 14:
+                        stats.cha += 1
+                        x += 1
+                    elif stats.cha < 16:
+                        stats.cha += 1
+                        x += 2
+            stats.energy = 1000
+            stats.exp = 0
+            stats.maxHP = 8 + (stats.con-10)/2
+            stats.hp = stats.maxHP
+            stats.level = 1
             return stats
 
     class Char(object):
 
         # Мужские имена
-        maleNames = ['somemalename1','somemalename2']
+        maleNames = ['Аарон', 'Адам', 'Алан', 'Альберт', 'Алекс', 'Александр', 'Альфред', 'Эндрю', 'Энди', 'Энтони', 'Арнольд', 'Артур', 'Барри', 'Бен','Бенджамин', 'Бернард', 'Билл', 'Билли', 'Боб', 'Бобби', 'Брэд', 'Брэндон', 'Брайан', 'Брюс', 'Брайан', 'Бад', 'Кельвин', 'Карл', 'Карлос', 'Чарльз', 'Чарли', 'Крис', 'Кристиан', 'Кристофер', 'Колин', 'Конни', 'Кёртис', 'Дэйл', 'Дэн', 'Дэниел', 'Дэнни','Дэйв', 'Дэвид', 'Дэвис', 'Дин', 'Дэннис', 'Дерек', 'Дик', 'Дон', 'Дональд', 'Дуглас', 'Дюк', 'Дастин', 'Дилан', 'Эрл', 'Эдгар', 'Эдмонд', 'Эдвард', 'Эдвин', 'Элтон', 'Эмметт', 'Эрик', 'Эрнест', 'Этан', 'Феликс', 'Фердинанд', 'Флойд', 'Франсис', 'Фрэнк','Фред', 'Фредерик', 'Фуллер', 'Гарри', 'Джордж', 'Джеральд', 'Гилберт', 'Гловер', 'Гордон', 'Грэм, Грэхам', 'Грег', 'Гарольд','Харрисон', 'Гарри', 'Генри', 'Герберг', 'Говард', 'Джек', 'Джейк', 'Джеймс', 'Джей', 'Джефф', 'Джерри', 'Джим', 'Джоэл','Джон', 'Джонни', 'Джон', 'Джонатан', 'Кейн', 'Кит', 'Кен', 'Кеннет', 'Кевин', 'Курт', 'Ларри', 'Лео', 'Леонард', 'Луис', 'Линн', 'Марк', 'Мартин', 'Марвин', 'Мэттью', 'Морис', 'Макс', 'Мэл', 'Мелвин', 'Майкл', 'Майк', 'Нейтан', 'Нил', 'Нил', 'Ник', 'Норман', 'Оливер', 'Оскар', 'Остин', 'Освальд', 'Оуэн', 'Патрик', 'Пол', 'Пит', 'Питер', 'Фил', 'Филип', 'Ральф', 'Рэнди', 'Рэймонд', 'Ричард', 'Рик', 'Роб', 'Роберт', 'Роджер', 'Роланд','Рональд', 'Ронни', 'Рой', 'Сэм', 'Сэмюэл', 'Сид', 'Симон', 'Смит', 'Стивен', 'Стив', 'Тед', 'Терри', 'Теодор', 'Томас', 'Тим', 'Том', 'Тони', 'Виктор', 'Уэйн', 'Вильгельм', 'Уильям', 'Вилли', 'Уилсон']
 
         # Женские имена
-        femaleNames = ['somefemalename1','somefemalename2']
+        femaleNames = ['Амелия', 'Оливия', 'Эмили', 'Ава', 'Айла', 'Джессика', 'Поппи', 'Изабелла', 'Софи', 'Мия', 'Руби', 'Лили', 'Грейс', 'Иви', 'София', 'Элла', 'Скарлетт', 'Хлое', 'Изабель', 'Фрейя', 'Шарлотта', 'Сиенна', 'Дэйзи', 'Фиби', 'Милли', 'Ева', 'Элис', 'Люси', 'Флоренс', 'София', 'Лайла', 'Лола', 'Холли', 'Имоджен', 'Молли', 'Матильда', 'Лилли', 'Рози', 'Элизабет', 'Эрин', 'Мэйси', 'Лекси', 'Элли', 'Ханна', 'Эвелин', 'Эбигейл', 'Элси', 'Саммер', 'Меган', 'Жасмин', 'Майя', 'Амели', 'Лэйси', 'Уиллоу', 'Эмма', 'Белла', 'Элеонора', 'Эсми', 'Элиза', 'Джорджия', 'Харриет', 'Грейси', 'Аннабель', 'Эмилия', 'Эмбер', 'Айви', 'Брук', 'Роуз', 'Анна', 'Зара', 'Леа', 'Молли', 'Марта', 'Фэйт', 'Холли', 'Эми', 'Бетани', 'Вайолет', 'Кэти', 'Марьям', 'Франческа', 'Джулия', 'Мария', 'Дарси', 'Изабель', 'Тилли', 'Мэддисон', 'Виктория', 'Изобель', 'Нив', 'Скай', 'Мэдисон', 'Дарси', 'Айша', 'Беатриче', 'Сара', 'Зои', 'Пейдж', 'Хайди', 'Лидия']
 
         # Фамилии
         # maleLastNames = {'Крестьянин':90, 'Охотник':10, 'Лесник':10}
         # femaleLastNames = {'Крестьянка':50, 'Селянка':50, 'Охотница':5}
-        maleLastNames = {'Крестьянин':100, 'Селянин':50}
-        femaleLastNames = {'Крестьянка':50, 'Селянка':50}
+        maleLastNames = ['Торговец','Горожанин','Фермер', 'Алхимик', 'Нищий', 'Шут', 'Ремесленник', 'Кожевенник', 'Кузнец', 'Вор', 'Бард', 'Менестрель', 'Портной']
+        femaleLastNames = ['Торговка','Горожанка','Фермер', 'Нищая', 'Ремесленница', 'Менестрель', 'Портниха', 'Шлюха']
         
         def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = [], state = [], do = ''):
             if body is None:
@@ -209,9 +260,7 @@ init -20 python:
 
             stats = Stats.random()
             firstName = choice(cls.maleNames) if body.sex() == 'male' else choice(cls.femaleNames)
-            lastName = choice(cls.lastNames)
-            if body.sex() != 'male':
-                lastName += 'а'
+            lastName = choice(cls.maleLastNames) if body.sex() == 'male' else choice(cls.femaleLastNames)
 
             color = '#FFFFFF'
             if body.sex() == 'female':
@@ -285,6 +334,15 @@ init -20 python:
         def incEnergy(self,amount):
             self.stats.energy += int(amount)
 ########################################################################################
+        def getMoney(self):
+            return self.money
+            
+        def setMoney(self,amount):
+            self.money = int(amount)
+            
+        def incMoney(self,amount):
+            self.money += int(amount)
+########################################################################################
         def getPerception(self):
             if 'alarm' in self.state:
                 return dice(self) + self.getWISmod()
@@ -297,6 +355,11 @@ init -20 python:
             else:
                 return 0
 ########################################################################################
+        def getSteal(self):
+            # if development == 1:
+                # return 100
+            return dice(self) + self.getDEXmod()
+########################################################################################
         def getUnlock(self):
             return dice(self) + self.getDEXmod()
 ########################################################################################
@@ -308,6 +371,9 @@ init -20 python:
 ########################################################################################
         def getWeight(self):
             return self.getSTR()*15
+########################################################################################
+        def getLevel(self):
+            return self.stats.level
             
         def checkRescue(self, item):
             if isinstance(item, Trap):
@@ -342,5 +408,71 @@ init -20 python:
                 self.state.remove('alarm')
             else:
                 self.state.append('alarm')
+                
+        def autoLevel(self, count):
+            for temp in range(0, count):
+                self.stats.level += 1
+                self.stats.maxHP = 8 + (self.stats.con-10)/2 + (5 + (self.stats.con-10)/2)*(self.stats.level - 1)
+                self.stats.hp = self.stats.maxHP
+                if self.stats.level in [4,8,10,12,16,19]:
+                    x = 0
+                    while x < 1:
+                        tempChoce = rand(1,6)
+                        if tempChoce == 1:
+                            if self.stats.str >= 20:
+                                x -= 1
+                                self.stats.str -= 1
+                            self.stats.str += 1
+                        elif tempChoce == 2:
+                            if self.stats.dex >= 20:
+                                x -= 1
+                                self.stats.dex -= 1
+                            self.stats.dex += 1
+                        elif tempChoce == 3:
+                            if self.stats.con >= 20:
+                                x -= 1
+                                self.stats.con -= 1
+                            self.stats.con += 1
+                        elif tempChoce == 4:
+                            if self.stats.int >= 20:
+                                x -= 1
+                                self.stats.int -= 1
+                            self.stats.int += 1
+                        elif tempChoce == 5:
+                            if self.stats.wis >= 20:
+                                x -= 1
+                                self.stats.wis -= 1
+                            self.stats.wis += 1
+                        elif tempChoce == 6:
+                            if self.stats.cha >= 20:
+                                x -= 1
+                                self.stats.cha -= 1
+                            self.stats.cha += 1
+                        x += 1
+                        
+##########################################################################
+#ИНВЕНТАРЬ
+##########################################################################
+        def addItem(self,item):
+            temp = copy.copy(item)
+            self.inventory.append(temp)
             
+        def stealItem(self, char, item):
+            char.removeItem(item)
+            player.addItem(item)
+            item.steal()
+
+        def removeItem(self,item):
+            if type(item) is str:
+                for x in self.inventory:
+                    if x.name == item:
+                        self.inventory.remove(x)
+            else:
+                if self.inventory.count(item) > 0:
+                    self.inventory.remove(item)
+                if self.wear.count(item) > 0:
+                    self.wear.remove(item)
+                for x in self.inventory:
+                    if x.name == item.name:
+                        self.inventory.remove(x)
             

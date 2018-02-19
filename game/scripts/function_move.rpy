@@ -18,13 +18,10 @@ init python:
         renpy.scene(layer='screens') # Сброс скринов
         renpy.show('black') # Базовый фон
         changetime(5)
-        # checkTraps(where)
+        resetStats([])
+        addPeopleLoc(where)
+        checkTraps(where)
         renpy.jump('location_label') #Прыгаем на наш костыль для вызовы скрина локации
-        
-    def clrscr():
-        renpy.scene(layer='master') # Сброс картинок
-        renpy.scene(layer='screens') # Сброс скринов
-        renpy.show('black') # Базовый фон
         
     def checkTraps(location):
         tempArr = []
@@ -38,3 +35,20 @@ init python:
                     if isinstance(item, Trap):
                         if item.difficulty < player.getPerception():
                             item.found = True
+                            
+    def resetStats(input):
+        player.inventory.sort(key=lambda x: x.name)
+        for x in input:
+            x.normalize()
+        player.normalize()
+        
+    def addPeopleLoc(location):
+        if location.type == 'private':
+            peopleAmount = 0
+        else:
+            peopleAmount = rand(5,30)
+        peopleAmount = rand(5,30)
+        location.people = genChars(peopleAmount)
+        
+    def clrscr():
+        renpy.scene(layer='screens')
