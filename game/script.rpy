@@ -15,10 +15,26 @@ init:
         allLocks = []
         allTraps = []
         allItems = []
+        allSkills = []
+        diceTrowsArr = ['Броски']
+        diceText = ''
         prevloc = ''
+        crutchLock = ''
+        crutchDoor = ''
+        crutchTrap = ''
+        selectedChar = ''
 # Игра начинается здесь.
 label start:
     $ curloc = home
     jump generatePlayer
     # $ move(home)
     return
+
+label after_load:
+    python:
+        genSkills()
+        for x in player.skills:
+            for y in allSkills:
+                if x.id == y.id:
+                    player.skills.remove(x)
+                    player.skills.append(y)

@@ -47,7 +47,7 @@ init -2 python:
                 tempChar = Char.random('female', 'images/noimage.gif')
             tempChar.autoLevel(rand(0,2))
             for x in allItems:
-                if rand(1,10) == 1:
-                    tempChar.addItem(x)
+                # if rand(1,10) == 1:
+                tempChar.addItem(x)
             tempArr.append(tempChar)
         return tempArr

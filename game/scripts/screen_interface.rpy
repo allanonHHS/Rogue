@@ -1,4 +1,5 @@
 init 10 python:
+    import time
     def doorAction(door):
         if door.safe == True:
             return [Function(move, door.getLoc())]
@@ -13,33 +14,10 @@ init 10 python:
             if isinstance(x, Trap):
                 if x.state == 'armed' and x.found == True:
                     return [Show('unlock', None, door)]
-            if isinstance(x, Trap):
+            if isinstance(x, Trap): 
                 if x.state == 'armed' and x.found == False:
                     return [Function(clrscr), Function(x.disarm), Jump(x.do)]
         return [Function(door.setSafe), Function(move, door.getLoc())]
-
-    
-    def unlock(lock, door):
-        if isinstance(lock, Lock):
-            if lock.difficulty < player.getUnlock():
-                return [Function(lock.unlock), Function(changetime, 10), Show('unlockSuccess'),  Show('unlock', None, door)]
-            else:
-                if lock.do != '' and player.checkRescue(lock) == False:
-                    return [Function(clrscr), Function(lock.unlock), Jump(lock.do)]
-                else:
-                    return [Function(changetime, 10), Show('unlockFail')]
-        return NullAction
-        
-    def disarm(trap, door):
-        if isinstance(trap, Trap):
-            if player.getDisarmINT() > trap.difficulty and player.getDisarmDEX() > trap.difficulty:
-                return [Function(trap.disarm), Function(changetime, 10), Show('unlockSuccess'),  Show('unlock', None, door)]
-            else:
-                if trap.do != '' and player.checkRescue(trap) == False:
-                    return [Function(changetime, 10), Show('unlockFail')]
-                else:
-                    return [Function(clrscr), Function(trap.disarm), Jump(trap.do)]
-        return NullAction
                     
     def checkDoorTrap(door):
         for item in door.container:
@@ -48,28 +26,73 @@ init 10 python:
                     item.find()
                     
     def checkPocket(char):
-        if char.getPerception() > player.getSteal():
-            if char.getDEXmod() > player.getDEXmod():
-                if char.getSTRmod() > player.getSTRmod():
-                    return [Function(clrscr), Jump('steal_catched')]
+        if isSuccess(char.useSkill('perception'), player.useSkill('dexOfHand'),'Попытка вас заметить: '): #Если чар выбросил больше восприятия, чем мы воровства
+            if isSuccess(char.useSkill('dex'), player.useSkill('dex'), 'Попытка вас поймать: '):
+                if isSuccess(char.useSkill('str'), player.useSkill('str'), 'Попытка вас удержать: '):
+                    clrscr()
+                    renpy.jump('steal_catched')
                 else:
-                    return [Function(clrscr), Jump('steal_escapeSTR')]
+                    clrscr()
+                    renpy.jump('steal_escapeSTR')
             else:
-                return [Function(clrscr), Jump('steal_escapeDEX')]
+                clrscr()
+                renpy.jump('steal_escapeDEX')
         else:
-            return [Show('stealScreen', None, char)]
+            renpy.show_screen('stealScreen', char = char)
+            renpy.restart_interaction()
+                
             
     def stealAction(char, item):
-        if char.getPerception() > player.getSteal():
-            if char.getDEXmod() > player.getDEXmod():
-                if char.getSTRmod() > player.getSTRmod():
-                    return [Function(clrscr), Jump('steal_catched')]
+        if isSuccess(char.useSkill('perception'), player.useSkill('dexOfHand'),'Попытка вас заметить: '): #Если чар выбросил больше восприятия, чем мы воровства
+            if isSuccess(char.useSkill('dex'), player.useSkill('dex'), 'Попытка вас поймать: '):
+                if isSuccess(char.useSkill('str'), player.useSkill('str'), 'Попытка вас удержать: '):
+                    clrscr()
+                    renpy.jump('steal_catched')
                 else:
-                    return [Function(clrscr), Jump('steal_escapeSTR')]
+                    clrscr()
+                    renpy.jump('steal_escapeSTR')
             else:
-                return [Function(clrscr), Jump('steal_escapeDEX')]
+                clrscr()
+                renpy.jump('steal_escapeDEX')
         else:
-            return [Function(player.stealItem, char, item), Show('stealScreen', None, char)]
+            player.stealItem(char, item)
+            renpy.show_screen('stealScreen', char = char)
+            renpy.restart_interaction()
+            
+            
+    def unlock(lock, door):
+        if isinstance(lock, Lock):
+            if isSuccess(player.useSkill('breaking'), lock.difficulty, 'Взлом: '):
+                lock.unlock()
+                changetime(10)
+                renpy.show_screen('unlock',door)
+                renpy.restart_interaction()
+            else:
+                if lock.do != '' and isSuccess(player.useSkill(lock.rescue), lock.difficulty, 'Спасбросок: ') == False:
+                    clrscr()
+                    lock.unlock()
+                    renpy.jump(lock.do)
+                else:
+                    changetime(10)
+                    renpy.show_screen('unlock',door)
+                    renpy.restart_interaction()
+                    
+    def disarm(trap, door):
+        if isinstance(trap, Trap):
+            if isSuccess(player.useSkill('int'), trap.difficulty, 'Знание ловушек: ')  and isSuccess(player.useSkill('disarm'), trap.difficulty, 'Обезвреживание: '):
+                trap.disarm()
+                changetime(10)
+                renpy.show_screen('unlock',door)
+                renpy.restart_interaction()
+            else:
+                if trap.do != '' and isSuccess(player.useSkill(trap.rescue), trap.difficulty, 'Спасбросок: ') == False:
+                    clrscr()
+                    trap.disarm()
+                    renpy.jump(trap.do)
+                else:
+                    changetime(10)
+                    renpy.show_screen('unlock',door)
+                    renpy.restart_interaction()
 
     def inventoryAction(item):
         if 'money' in item.type:
@@ -77,6 +100,12 @@ init 10 python:
         else:
             return [Show('inventory')]
             
+            
+    curried_checkPocket = renpy.curry(checkPocket)
+    curried_stealAction = renpy.curry(stealAction)
+    curried_unlock = renpy.curry(unlock)
+    curried_disarm = renpy.curry(disarm)
+    
 # Скрин, показывающй все локации
 screen location(locObj):
     add locObj.image xpos 0.5 xanchor 0.5# Отображам картинку
@@ -99,10 +128,13 @@ screen location(locObj):
                 
             for x in locObj.doors:
                 textbutton x.name + ':' + x.getLocName() xmaximum 300 xminimum 300 action doorAction(x)
+    if development == 1:
+        textbutton 'test' action Jump('test') xpos 0.5 ypos 0.5
                 
     use stats(locObj)
     use displayTime
     use showLocPeople
+    use diceTrows
     # if development == 1:
         # use testGen
                 
@@ -134,6 +166,8 @@ screen stats(locObj):
     
             
 screen unlock(door):
+    zorder 10
+    modal True
     frame xpos 0.5 ypos 0.5 xalign 0.5 yalign 0.5:
         has vbox
         if development == 1:
@@ -144,15 +178,21 @@ screen unlock(door):
         for x in door.container:
             if isinstance(x, Lock):
                 if x.state == 'closed':
-                    textbutton x.name + ':' + str(x.difficulty) action unlock(x, door) xmaximum 250 xminimum 250
+                    textbutton x.name + ':' + str(x.difficulty):
+                        action curried_unlock(x, door)
+                        xmaximum 250 xminimum 250
                         
             if isinstance(x, Trap):
                 if x.state == 'armed' and x.found == True:
-                    textbutton x.name + ':' + str(x.difficulty) action disarm(x, door) xmaximum 250 xminimum 250
+                    textbutton x.name + ':' + str(x.difficulty):
+                        action curried_disarm(x, door)
+                        xmaximum 250 xminimum 250
                         
         if len(door.getLocks()) == 0:
             textbutton 'Войти' xmaximum 250 xminimum 250 action doorEnter(door)
         textbutton 'Уйти' xmaximum 250 xminimum 250 action Function(move, curloc)
+        
+    use diceTrows
                         
 screen displayTime:
     vbox xalign 0.99 yalign 0.0:
@@ -197,29 +237,32 @@ screen showChar(testChar):
             text (x.name)
         
 screen showLocPeople:
-    frame xpos 0.2 ypos 0.01:
+    frame xpos 0.12 ypos 0.0 xmaximum 250 xminimum 250:
         has vbox
         for x in curloc.people:
             textbutton x.name:
                 hovered [Show('showChar', None, x)]
                 unhovered [Hide('showChar')]
                 action [Show('choiceCharAction', None, x)]
+                xmaximum 250 xminimum 250
                 
 screen choiceCharAction(char):
-    tag pickPoket
+    # tag pickPoket
     frame xpos 0.5 ypos 0.5 xalign 0.5 yalign 0.5:
         has vbox
         textbutton 'Поговорить' action []
-        textbutton 'Проверить карманы' action checkPocket(char)
+        textbutton 'Проверить карманы' action  curried_checkPocket(char)
             
             
 screen stealScreen(char):
-    tag pickPoket
-    frame xpos 0.5 ypos 0.5 xalign 0.5 yalign 0.5:
+    zorder 5
+    modal True
+    # tag pickPoket
+    frame xpos 0.3 ypos 0.3:
         has vbox
         text ('В карманах у ' + char.fname)
         for x in char.inventory:
-            textbutton x.name action stealAction(char, x)
+            textbutton x.name action curried_stealAction(char, x)
         if len(char.inventory) == 0:
             text ('Пусто')
         textbutton 'Уйти' action [Function(move, curloc)]
@@ -232,5 +275,12 @@ screen inventory:
             textbutton x.name action inventoryAction(x)
         text (str(player.money) + ' Крон')
         textbutton 'Уйти' action [Function(move, curloc)]
-            
-            
+        
+screen diceTrows:
+    frame xpos 0.53 ypos 0.01 xalign 0.5:
+        has vbox
+        python:
+            while len(diceTrowsArr) > 5:
+                diceTrowsArr.pop(0)
+        for x in reversed(diceTrowsArr):
+            text(x) style 'smallText'

@@ -7,7 +7,7 @@ init -21 python:
     
     def dice(char):
         if char == player:
-            temp = max(randint(1, 20), randint(1, 20))
+            temp = randint(1, 20)
         else:
             temp = randint(1, 20)
             
@@ -34,3 +34,28 @@ init -21 python:
                 if x.state == 'armed' and x.found == False:
                     if x.difficulty <= player.getPerception():
                         x.found = True
+                        
+    def isSuccess(what,where,*args):
+        if len(args) > 0:
+            desc = args[0]
+        else:
+            desc = ''
+        if isinstance(what, list) and isinstance(where, list):
+            if what[0] >= where[0]:
+                diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Успех!')
+                # renpy.show_screen('paramShow')
+                return True
+            else:
+                diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Провал...')
+                # renpy.show_screen('paramShow')
+                return False
+        if isinstance(what, list) and isinstance(where, int):
+            if what[0] >= where:
+                diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Успех!')
+                # renpy.show_screen('paramShow')
+                return True
+            else:
+                diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Провал...')
+                # renpy.show_screen('paramShow')
+                return False
+        return False

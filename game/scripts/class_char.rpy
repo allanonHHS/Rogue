@@ -416,7 +416,7 @@ init -20 python:
                 self.stats.hp = self.stats.maxHP
                 if self.stats.level in [4,8,10,12,16,19]:
                     x = 0
-                    while x < 1:
+                    while x < 2:
                         tempChoce = rand(1,6)
                         if tempChoce == 1:
                             if self.stats.str >= 20:
@@ -449,7 +449,57 @@ init -20 python:
                                 self.stats.cha -= 1
                             self.stats.cha += 1
                         x += 1
-                        
+##########################################################################
+#Скиллы
+##########################################################################
+        def addSkill(self,skill):
+            if isinstance(skill, basestring):
+                for x in allSkills:
+                    if (x.id == skill or x.name == skill) and self.getSkill(skill) == False:
+                        self.skills.append(x)
+                        break
+            else:
+                if skill not in self.skills:
+                    self.skills.append(skill)
+                
+                
+        def useSkill(self,skill):
+            if isinstance(skill, basestring) == False:
+                skill = skill.id
+                
+            for x in allSkills:
+                if x.id == skill or x.name == skill:
+                    skill = x
+            
+            dice_throw = dice(self)
+            
+            if isinstance(skill,Skill):
+                if 'str' in skill.type:
+                    return [dice_throw + self.getSTRmod() + skill.getPower(self), 'Кубик-%d + Мод Силы-%d + Умение-%d = %d' % (dice_throw, self.getSTRmod(), skill.getPower(self), dice_throw + self.getSTRmod() + skill.getPower(self))]
+                elif 'dex' in skill.type:
+                    return [dice_throw + self.getDEXmod() + skill.getPower(self), 'Кубик-%d + Мод Ловкости-%d + Умение-%d = %d' % (dice_throw, self.getDEXmod(), skill.getPower(self), dice_throw + self.getDEXmod() + skill.getPower(self))]
+                elif 'con' in skill.type:
+                    return [dice_throw + self.getCONmod() + skill.getPower(self), 'Кубик-%d + Мод Выносливости-%d + Умение-%d = %d' % (dice_throw, self.getCONmod(), skill.getPower(self), dice_throw + self.getCONmod() + skill.getPower(self))]
+                elif 'wis' in skill.type:
+                    return [dice_throw + self.getWISmod() + skill.getPower(self), 'Кубик-%d + Мод Мудрости-%d + Умение-%d = %d' % (dice_throw, self.getWISmod(), skill.getPower(self), dice_throw + self.getWISmod() + skill.getPower(self))]
+                elif 'int' in skill.type:
+                    return [dice_throw + self.getINTmod() + skill.getPower(self), 'Кубик-%d + Мод Интеллекта-%d + Умение-%d = %d' % (dice_throw, self.getINTmod(), skill.getPower(self), dice_throw + self.getINTmod() + skill.getPower(self))]
+                elif 'cha' in skill.type:
+                    return [dice_throw + self.getCHAmod() + skill.getPower(self), 'Кубик-%d + Мод Харизмы-%d + Умение-%d = %d' % (dice_throw, self.getCHAmod(), skill.getPower(self), dice_throw + self.getCHAmod() + skill.getPower(self))]
+            else:
+                return [dice_throw, 'Кубик-%d' % (dice_throw)]
+
+        def getSkill(self, skill):
+            arr = self.getAllSkills()
+            for x in arr:
+                if x.id == skill:
+                    return x
+            return False
+                    
+        
+        def getAllSkills(self):
+            return self.skills
+            
 ##########################################################################
 #ИНВЕНТАРЬ
 ##########################################################################

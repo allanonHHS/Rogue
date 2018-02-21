@@ -78,7 +78,7 @@ init 9 python:
         image = 'images/noimage.gif',
         )
     woodDoor.addLock('simpleLock')
-    woodDoor.addLock('simpleLock')
+    woodDoor.addTrap('simpleTrap')
     woodDoor.addTrap('simpleTrap')
     allDoors.append(woodDoor)
     
@@ -90,6 +90,8 @@ init 9 python:
         image = 'images/noimage.gif',
         )
     anotherDoor.addLock('simpleLock')
+    anotherDoor.addLock('simpleLock')
+    anotherDoor.addTrap('simpleTrap')
     anotherDoor.addTrap('simpleTrap')
     anotherDoor.addTrap('simpleTrap')
     allDoors.append(anotherDoor)

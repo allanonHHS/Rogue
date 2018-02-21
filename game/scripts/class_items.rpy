@@ -16,7 +16,7 @@ init -50 python:
     class Tool(Item):
         def __init__ (self, purpose):
             self.purpose = purpose
-            
+    
     def genItems():
         smallMoneyBag = Item(
             name = 'Малый кошель',
