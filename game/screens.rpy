@@ -55,7 +55,8 @@ screen say:
 
     # Использовать быстрое меню.
     use quick_menu
-    use diceTrows
+    if intro == 0:
+        use diceTrows
 
 
 ##############################################################################
@@ -468,7 +469,7 @@ init -2 python:
 # http://www.renpy.org/doc/html/screen_special.html#yesno-prompt
 
 screen yesno_prompt:
-
+    zorder 100
     modal True
 
     window:

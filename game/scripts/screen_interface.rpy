@@ -97,9 +97,27 @@ init 10 python:
     def inventoryAction(item):
         if 'money' in item.type:
             return [Function(player.incMoney, rand(0, item.cost)), Function(player.removeItem, item),  Show('inventory')]
+        elif 'clothes' in item.type:
+            return [Function(player.wearFunc, item), Show('inventory')]
         else:
             return [Show('inventory')]
             
+    def useTool(tool, door):
+        if tool not in player.wear:
+            player.equipTool(tool)
+        else:
+            player.unequipTool(tool)
+        renpy.show_screen('unlock',door)
+        renpy.restart_interaction()
+            
+    def getItems(list):
+        tempArr = []
+        used = []
+        for x in list:
+            if x.name not in used:
+                tempArr.append(x)
+                used.append(x.name)
+        return tempArr
             
     curried_checkPocket = renpy.curry(checkPocket)
     curried_stealAction = renpy.curry(stealAction)
@@ -130,6 +148,15 @@ screen location(locObj):
                 textbutton x.name + ':' + x.getLocName() xmaximum 300 xminimum 300 action doorAction(x)
     if development == 1:
         textbutton 'test' action Jump('test') xpos 0.5 ypos 0.5
+        frame xpos 0.8 ypos 0.3 yanchor 0.5:
+            has vbox
+            text('Эффекты:')
+            for x in player.effects:
+                text x.name
+            null height 30
+            text('Одето:')
+            for x in player.wear:
+                text x.name
                 
     use stats(locObj)
     use displayTime
@@ -158,6 +185,10 @@ screen stats(locObj):
             text ('Мудрость :[temp]')
             $ temp = player.getCHA()
             text ('Обаяние :[temp]')
+            null height 20
+            text ('Умения:')
+            for x in player.getAllSkills():
+                text ('[x.name]')
         frame xpos 0.01:
             if 'sneak' in player.state:
                 textbutton 'Прекратить красться' action [Function(player.toggleSneak)]
@@ -166,7 +197,7 @@ screen stats(locObj):
     
             
 screen unlock(door):
-    zorder 10
+    zorder 1
     modal True
     frame xpos 0.5 ypos 0.5 xalign 0.5 yalign 0.5:
         has vbox
@@ -179,19 +210,29 @@ screen unlock(door):
             if isinstance(x, Lock):
                 if x.state == 'closed':
                     textbutton x.name + ':' + str(x.difficulty):
-                        action curried_unlock(x, door)
+                        action [Function(unlock, x, door)]
                         xmaximum 250 xminimum 250
                         
             if isinstance(x, Trap):
                 if x.state == 'armed' and x.found == True:
                     textbutton x.name + ':' + str(x.difficulty):
-                        action curried_disarm(x, door)
+                        action [Function(disarm, x, door)]
                         xmaximum 250 xminimum 250
                         
         if len(door.getLocks()) == 0:
             textbutton 'Войти' xmaximum 250 xminimum 250 action doorEnter(door)
         textbutton 'Уйти' xmaximum 250 xminimum 250 action Function(move, curloc)
-        
+    
+    frame xpos 0.3 ypos 0.7 yanchor 0.5:
+        has vbox
+        for x in player.inventory:
+            if isinstance(x, Tool):
+                textbutton x.name + ':' + str(x.durability):
+                    action Function(useTool, x, door)
+
+            
+                
+    
     use diceTrows
                         
 screen displayTime:
@@ -251,11 +292,11 @@ screen choiceCharAction(char):
     frame xpos 0.5 ypos 0.5 xalign 0.5 yalign 0.5:
         has vbox
         textbutton 'Поговорить' action []
-        textbutton 'Проверить карманы' action  curried_checkPocket(char)
+        textbutton 'Проверить карманы' action Function(checkPocket, char)
             
             
 screen stealScreen(char):
-    zorder 5
+    zorder 1
     modal True
     # tag pickPoket
     frame xpos 0.3 ypos 0.3:

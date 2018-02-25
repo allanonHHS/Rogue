@@ -41,6 +41,8 @@ init python:
         for x in input:
             x.normalize()
         player.normalize()
+        player.recountEffects()
+        player.checkDurability()
         
     def addPeopleLoc(location):
         if location.type == 'private':

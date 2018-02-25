@@ -136,6 +136,15 @@ init -50 python:
         )
         allSkills.append(nature)
         
+        investigation = Skill(
+            name = 'Расследование',
+            id = 'investigation',
+            type = ['int','player','npc'],
+            ability = '',
+            description = ''
+        )
+        allSkills.append(investigation)
+        
         insight = Skill(
             name = 'Проницательность',
             id = 'insight',

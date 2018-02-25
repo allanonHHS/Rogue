@@ -281,37 +281,37 @@ init -20 python:
             return self.fname + ' ' + self.lname
 ########################################################################################
         def getSTR(self):
-            return self.stats.str
+            return self.getEffectStrengthByType('str') + self.stats.str
             
         def getSTRmod(self):
             return int((self.getSTR() - 10)/2)
 ########################################################################################            
         def getDEX(self):
-            return self.stats.dex
+            return self.getEffectStrengthByType('dex') + self.stats.dex
             
         def getDEXmod(self):
             return int((self.getDEX() - 10)/2)
 ########################################################################################
         def getCON(self):
-            return self.stats.con
+            return self.getEffectStrengthByType('con') + self.stats.con
             
         def getCONmod(self):
             return int((self.getCON() - 10)/2)
 ########################################################################################
         def getINT(self):
-            return self.stats.int
+            return self.getEffectStrengthByType('int') + self.stats.int
             
         def getINTmod(self):
             return int((self.getINT() - 10)/2)
 ########################################################################################
         def getWIS(self):
-            return self.stats.wis
+            return self.getEffectStrengthByType('wis') + self.stats.wis
             
         def getWISmod(self):
             return int((self.getWIS() - 10)/2)
 ########################################################################################
         def getCHA(self):
-            return self.stats.cha
+            return self.getEffectStrengthByType('cha') + self.stats.cha
             
         def getCHAmod(self):
             return int((self.getCHA() - 10)/2)
@@ -472,22 +472,39 @@ init -20 python:
                     skill = x
             
             dice_throw = dice(self)
+            itemsStrength = 0
+            
+            for effect in self.effects: # перебираем эффекты
+                if skill.id in effect.type: # если скилл есть в эффектах
+                    itemsStrength += effect.strength # Усиляем
+                if self.getTool() != False: # если испольуется тул
+                    for x in self.getTool().effects: # перебираем эффекты тула
+                        if skill.id in effect.type: # Если скилл есть в эффектах тула
+                            self.getTool().durability -= 1 # Используем тул
+                            break
+                                
+            self.checkDurability()
+            stringToReturn = 'Брск %d + %s %d + Прд %d + Умн %d = %d'
             
             if isinstance(skill,Skill):
                 if 'str' in skill.type:
-                    return [dice_throw + self.getSTRmod() + skill.getPower(self), 'Кубик-%d + Мод Силы-%d + Умение-%d = %d' % (dice_throw, self.getSTRmod(), skill.getPower(self), dice_throw + self.getSTRmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getSTRmod() + + skill.getPower(self), stringToReturn % (dice_throw, 'СИЛ', self.getSTRmod(), itemsStrength, skill.getPower(self), dice_throw + self.getSTRmod() + skill.getPower(self))]
                 elif 'dex' in skill.type:
-                    return [dice_throw + self.getDEXmod() + skill.getPower(self), 'Кубик-%d + Мод Ловкости-%d + Умение-%d = %d' % (dice_throw, self.getDEXmod(), skill.getPower(self), dice_throw + self.getDEXmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getDEXmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ЛОВ',self.getDEXmod(), itemsStrength, skill.getPower(self), dice_throw + self.getDEXmod() + skill.getPower(self) + itemsStrength)]
                 elif 'con' in skill.type:
-                    return [dice_throw + self.getCONmod() + skill.getPower(self), 'Кубик-%d + Мод Выносливости-%d + Умение-%d = %d' % (dice_throw, self.getCONmod(), skill.getPower(self), dice_throw + self.getCONmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getCONmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ВЫН',self.getCONmod(), itemsStrength, skill.getPower(self), dice_throw + self.getCONmod() + skill.getPower(self) + itemsStrength)]
                 elif 'wis' in skill.type:
-                    return [dice_throw + self.getWISmod() + skill.getPower(self), 'Кубик-%d + Мод Мудрости-%d + Умение-%d = %d' % (dice_throw, self.getWISmod(), skill.getPower(self), dice_throw + self.getWISmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getWISmod() + skill.getPower(self), stringToReturn % (dice_throw, 'МУД', self.getWISmod(),itemsStrength, skill.getPower(self), dice_throw + self.getWISmod() + skill.getPower(self) + itemsStrength)]
                 elif 'int' in skill.type:
-                    return [dice_throw + self.getINTmod() + skill.getPower(self), 'Кубик-%d + Мод Интеллекта-%d + Умение-%d = %d' % (dice_throw, self.getINTmod(), skill.getPower(self), dice_throw + self.getINTmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getINTmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ИНТ', self.getINTmod(),itemsStrength, skill.getPower(self), dice_throw + self.getINTmod() + skill.getPower(self) + itemsStrength)]
                 elif 'cha' in skill.type:
-                    return [dice_throw + self.getCHAmod() + skill.getPower(self), 'Кубик-%d + Мод Харизмы-%d + Умение-%d = %d' % (dice_throw, self.getCHAmod(), skill.getPower(self), dice_throw + self.getCHAmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getCHAmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ХАР', self.getCHAmod(),itemsStrength, skill.getPower(self), dice_throw + self.getCHAmod() + skill.getPower(self) + itemsStrength)]
             else:
-                return [dice_throw, 'Кубик-%d' % (dice_throw)]
+                toReturn = [dice_throw, 'Кубик-%d' % (dice_throw)]
+            
+            self.checkDurability()
+            self.recountEffects()
+            return toReturn
 
         def getSkill(self, skill):
             arr = self.getAllSkills()
@@ -495,18 +512,157 @@ init -20 python:
                 if x.id == skill:
                     return x
             return False
-                    
+        
+        def hasSkill(self,skill):
+            arr = self.getAllSkills()
+            for x in arr:
+                if x.id == skill:
+                    return True
+            return False
+        
         
         def getAllSkills(self):
             return self.skills
+##########################################################################
+#Эффекты
+##########################################################################
+        def hasEffect(self, effect):
+            for x in self.effects:
+                if x == effect or x.name == effect or x.id == effect:
+                    return True
+            return False
             
+        def applyEffect(self, effect):
+            global mtime
+            if isinstance(effect, basestring):
+                for x in allEffects:
+                    if (x.id == effect or x.name == effect):
+                        x.applied = mtime
+                        if self.hasEffect(x) == False:
+                            self.effects.append(x)
+                            break
+            else:
+                effect.applied = mtime
+                if self.hasEffect(effect) == False:
+                    self.effects.append(effect)
+                
+        def addEffect(self, effect):
+            if isinstance(effect, basestring):
+                for x in allEffects:
+                    if (x.id == effect or x.name == effect) and self.hasEffect(skill) == False:
+                        self.effects.append(x)
+                        break
+            else:
+                if effect not in self.effects:
+                    self.effects.append(effect)
+                    
+        def getEffectStrengthByType(self, type):
+            effectStrength = 0
+            for x in self.effects:
+                if type in x.type:
+                    effectStrength += x.strength
+            return effectStrength
+            
+        def recountEffects(self):
+            global mtime
+            
+            effectToRemove = []
+            for x in self.effects:
+                if 'item' in x.type or ('item' not in x.type and x.applied + x.duration < mtime):
+                    effectToRemove.append(x)
+                    
+            for x in effectToRemove:
+                self.effects.remove(x)
+                
+            for item in self.wear:
+                for effect in item.effects:
+                    if effect not in self.effects:
+                        self.effects.append(effect)
+            
+##########################################################################
+#Инструменты
+##########################################################################
+
+        
+        def checkDurability(self):
+            itemsToRemove = []
+            for x in self.wear:
+                if x.durability <= 0:
+                    itemsToRemove.append(x)
+                    
+            for x in itemsToRemove:
+                self.wear.remove(x)
+                
+            itemsToRemove = []
+            for x in self.inventory:
+                if x.durability <= 0:
+                    itemsToRemove.append(x)
+                    
+            for x in itemsToRemove:
+                self.inventory.remove(x)
+
+        def getTool(self):
+            for x in self.wear:
+                if isinstance(x,Tool):
+                    return x
+            return False
+                
+        def equipTool(self,tool):
+            for x in self.wear:
+                if isinstance(x,Tool):
+                    self.wear.remove(x)
+                    self.inventory.append(x)
+            self.wear.append(tool)
+            self.inventory.remove(tool)
+            self.recountEffects()
+            
+        def unequipTool(self,tool):
+            if tool in self.wear:
+                self.wear.remove(tool)
+                self.inventory.append(x)
+                self.recountEffects()
+                
+        def useTool(self):
+            for x in self.wear:
+                if isinstance(x,Tool):
+                    x.durability -= 1
+            
+##########################################################################
+#Одежда
+##########################################################################
+        def wearFunc(self, cloth):
+            if isinstance(cloth, Clothes):
+                for x in cloth.parts:
+                    for y in self.wear:
+                        for z in y.parts:
+                            if x == z:
+                                self.wear.remove(y)
+                                self.inventory.append(y)
+                                break
+                if rand(1,100) > 90:
+                    cloth.durability -= 1
+                self.inventory.remove(cloth)
+                self.wear.append(cloth)
+                self.checkDurability()
+                self.recountEffects()
+            else:
+                return False
+
+
 ##########################################################################
 #ИНВЕНТАРЬ
 ##########################################################################
         def addItem(self,item):
-            temp = copy.copy(item)
-            self.inventory.append(temp)
-            
+            if isinstance(item, Item):
+                self.inventory.append(copy.copy(item))
+                return True
+            for x in allItems:
+                if x.id == item or x.name == item:
+                    temp = copy.copy(x)
+                    self.inventory.append(temp)
+                    return True
+            return False
+
         def stealItem(self, char, item):
             char.removeItem(item)
             player.addItem(item)

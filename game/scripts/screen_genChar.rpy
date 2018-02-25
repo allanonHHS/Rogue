@@ -27,7 +27,7 @@ label generatePlayer:
             color = '#EE6A38',
             inventory = [],
             wear = [],
-            picto = 'images/noimage.gif',
+            picto = 'images/picto/player_picto.png',
             location = curloc,
             money = 100,
             skills = []
@@ -36,11 +36,21 @@ label generatePlayer:
         player.setHP(8 + player.getCONmod())
         player.setEnergy(500 + player.getCONmod()*100 + player.getSTRmod()*100)
         player.togglePerception()
+        genEffect()
         genItems()
+        genClothes()
         genSkills()
-
+        player.addItem('womanClothes')
+        player.addItem('thiefArmor')
+        # player.wearFunc(getClothById('womanClothes'))
+        
+        if development == 1:
+            for x in range(0,5):
+                player.addItem('lockpick')
+                player.addItem('instrument')
         # testChar.autoLevel(rand(1,20))
         move(home)
+    jump intro
         
 label test:
     python:

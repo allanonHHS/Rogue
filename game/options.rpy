@@ -15,7 +15,7 @@ init -1 python hide:
     def missing_image_callback(s):
         return im.Image("images/noimage.gif")
         
-    config.layers = [ 'master', 'transient', 'screens', 'testLayer' 'overlay' ]
+    # config.layers = [ 'master', 'transient', 'screens', 'testLayer' 'overlay' ]
     
     config.missing_image_callback = missing_image_callback
     config.developer = True
