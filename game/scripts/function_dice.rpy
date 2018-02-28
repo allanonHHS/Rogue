@@ -35,27 +35,25 @@ init -21 python:
                     if x.difficulty <= player.getPerception():
                         x.found = True
                         
-    def isSuccess(what,where,*args):
-        if len(args) > 0:
-            desc = args[0]
-        else:
-            desc = ''
+    def isSuccess(what, where, desc = '', hidden = False, exp = 0):
         if isinstance(what, list) and isinstance(where, list):
             if what[0] >= where[0]:
-                diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Успех!')
-                # renpy.show_screen('paramShow')
+                if hidden == False:
+                    diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Успех!')
+                    player.incExp(exp)
                 return True
             else:
-                diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Провал...')
-                # renpy.show_screen('paramShow')
+                if hidden == False:
+                    diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Провал...')
                 return False
         if isinstance(what, list) and isinstance(where, int):
             if what[0] >= where:
-                diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Успех!')
-                # renpy.show_screen('paramShow')
+                if hidden == False:
+                    diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Успех!')
+                    player.incExp(exp)
                 return True
             else:
-                diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Провал...')
-                # renpy.show_screen('paramShow')
+                if hidden == False:
+                    diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Провал...')
                 return False
         return False

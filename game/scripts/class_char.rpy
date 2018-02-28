@@ -135,7 +135,7 @@ init -20 python:
             self.energy = min(max(self.energy,0),2000)
             self.exp = min(max(self.exp,0),1000000)
             self.maxHP = min(max(self.maxHP,0), 8 + (self.con-10)/2 + (6 + (self.con-10)/2)*(self.level - 1))
-            self.level = min(max(self.maxHP,0),1000)
+            self.level = min(max(self.level,0),1000)
             
         @classmethod
         def random(cls):
@@ -210,10 +210,10 @@ init -20 python:
         # Фамилии
         # maleLastNames = {'Крестьянин':90, 'Охотник':10, 'Лесник':10}
         # femaleLastNames = {'Крестьянка':50, 'Селянка':50, 'Охотница':5}
-        maleLastNames = ['Торговец','Горожанин','Фермер', 'Алхимик', 'Нищий', 'Шут', 'Ремесленник', 'Кожевенник', 'Кузнец', 'Вор', 'Бард', 'Менестрель', 'Портной']
-        femaleLastNames = ['Торговка','Горожанка','Фермер', 'Нищая', 'Ремесленница', 'Менестрель', 'Портниха', 'Шлюха']
+        maleLastNames = ['Торговец','Горожанин','Фермер', 'Алхимик', 'Нищий', 'Ремесленник', 'Кожевенник', 'Кузнец', 'Вор', 'Бард', 'Менестрель', 'Портной', 'Дворянин', 'Стражник', 'Наёмник', 'Купец']
+        femaleLastNames = ['Торговка','Горожанка','Фермер', 'Нищая', 'Ремесленница', 'Менестрель', 'Портниха', 'Шлюха', 'Дворянка']
         
-        def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = [], state = [], do = ''):
+        def __init__(self, fname = '', lname = '', color = '#FFFFFF', age = 0, body = None, stats = None, picto = '', location = '', wear = None, inventory = None, money = 0, skills = None, state = None, do = ''):
             if body is None:
                 body = Body()
             if stats is None:
@@ -270,7 +270,7 @@ init -20 python:
             elif body.sex() == 'futa':
                 color = '#FC3A3A'
             
-            character = cls(firstName, lastName, color = color, age = rand(20, 60), body = body, stats = stats, picto = picto, inventory = [], wear = [])
+            character = cls(firstName, lastName, color = color, age = rand(20, 60), body = body, stats = stats, picto = picto, inventory = [], wear = [], state = [])
             return character
 
         def normalize(self):
@@ -285,36 +285,54 @@ init -20 python:
             
         def getSTRmod(self):
             return int((self.getSTR() - 10)/2)
+            
+        def incSTR(self, amount):
+            self.stats.str += amount
 ########################################################################################            
         def getDEX(self):
             return self.getEffectStrengthByType('dex') + self.stats.dex
             
         def getDEXmod(self):
             return int((self.getDEX() - 10)/2)
+                        
+        def incDEX(self, amount):
+            self.stats.dex += amount
 ########################################################################################
         def getCON(self):
             return self.getEffectStrengthByType('con') + self.stats.con
             
         def getCONmod(self):
             return int((self.getCON() - 10)/2)
+                        
+        def incCON(self, amount):
+            self.stats.con += amount
 ########################################################################################
         def getINT(self):
             return self.getEffectStrengthByType('int') + self.stats.int
             
         def getINTmod(self):
             return int((self.getINT() - 10)/2)
+                        
+        def incINT(self, amount):
+            self.stats.int += amount
 ########################################################################################
         def getWIS(self):
             return self.getEffectStrengthByType('wis') + self.stats.wis
             
         def getWISmod(self):
             return int((self.getWIS() - 10)/2)
+                        
+        def incWIS(self, amount):
+            self.stats.wis += amount
 ########################################################################################
         def getCHA(self):
             return self.getEffectStrengthByType('cha') + self.stats.cha
             
         def getCHAmod(self):
             return int((self.getCHA() - 10)/2)
+                        
+        def incCHA(self, amount):
+            self.stats.cha += amount
 ########################################################################################
         def getHP(self):
             return self.stats.hp
@@ -372,8 +390,28 @@ init -20 python:
         def getWeight(self):
             return self.getSTR()*15
 ########################################################################################
+        def checkLevel(self):
+            global level, statInc, skillInc
+            if level[self.getLevel()+1] <= self.getExp():
+                if self.getLevel() + 1 in [4,8,10,12,16,19]:
+                    statInc += 1
+                skillInc += 1
+                
+        def getNextLevelExp(self):
+            global level
+            return level[self.getLevel()+1]
+        
         def getLevel(self):
             return self.stats.level
+            
+        def incLevel(self):
+            self.stats.level += 1
+            
+        def getExp(self):
+            return self.stats.exp  
+        
+        def incExp(self, amount):
+            self.stats.exp += amount
             
         def checkRescue(self, item):
             if isinstance(item, Trap):
@@ -409,11 +447,15 @@ init -20 python:
             else:
                 self.state.append('alarm')
                 
+        def recountMaxHP(self):
+            self.stats.maxHP = 8 + (self.stats.con-10)/2 + (5 + (self.stats.con-10)/2)*(self.stats.level - 1)
+        
         def autoLevel(self, count):
             for temp in range(0, count):
                 self.stats.level += 1
                 self.stats.maxHP = 8 + (self.stats.con-10)/2 + (5 + (self.stats.con-10)/2)*(self.stats.level - 1)
                 self.stats.hp = self.stats.maxHP
+                self.addSkill(choice(allSkills))
                 if self.stats.level in [4,8,10,12,16,19]:
                     x = 0
                     while x < 2:
@@ -471,7 +513,10 @@ init -20 python:
                 if x.id == skill or x.name == skill:
                     skill = x
             
-            dice_throw = dice(self)
+            if skill.id == 'perception' and 'alarm' not in self.state:
+                dice_throw = 10
+            else:
+                dice_throw = dice(self)
             itemsStrength = 0
             
             for effect in self.effects: # перебираем эффекты
@@ -521,8 +566,14 @@ init -20 python:
             return False
         
         
-        def getAllSkills(self):
-            return self.skills
+        def getAllSkills(self, param = 'normal'):
+            if param == 'normal':
+                return self.skills
+            else:
+                tempArr = []
+                for x in self.skills:
+                    tempArr.append(x.id)
+                return tempArr
 ##########################################################################
 #Эффекты
 ##########################################################################
@@ -634,11 +685,12 @@ init -20 python:
             if isinstance(cloth, Clothes):
                 for x in cloth.parts:
                     for y in self.wear:
-                        for z in y.parts:
-                            if x == z:
-                                self.wear.remove(y)
-                                self.inventory.append(y)
-                                break
+                        if isinstance(y, Clothes):
+                            for z in y.parts:
+                                if x == z:
+                                    self.wear.remove(y)
+                                    self.inventory.append(y)
+                                    break
                 if rand(1,100) > 90:
                     cloth.durability -= 1
                 self.inventory.remove(cloth)
@@ -647,7 +699,21 @@ init -20 python:
                 self.recountEffects()
             else:
                 return False
-
+                
+        def getBodyPart(self, part = 'body'):
+            for x in self.wear:
+                if isinstance(x, Clothes):
+                    if part in x.parts:
+                        return x
+            return self.getItem('nothing')
+            
+        def undressPart(self, part = 'body'):
+            for x in self.wear:
+                if isinstance(x, Clothes):
+                    if part in x.parts:
+                        self.wear.remove(x)
+                        self.inventory.append(x)
+                        break
 
 ##########################################################################
 #ИНВЕНТАРЬ
@@ -664,21 +730,45 @@ init -20 python:
             return False
 
         def stealItem(self, char, item):
-            char.removeItem(item)
-            player.addItem(item)
-            item.steal()
-
+            if isinstance(char, Char):
+                char.removeItem(item)
+                player.inventory.append(item)
+                item.steal()
+            elif isinstance(char, Location):
+                char.items.remove(item)
+                player.inventory.append(item)
+                item.steal()
+            changetime(1)
+        
+        def takeItem(self, location, item):
+            location.items.remove(item)
+            self.inventory.append(item)
+            changetime(1)
+        
         def removeItem(self,item):
             if type(item) is str:
                 for x in self.inventory:
                     if x.name == item:
                         self.inventory.remove(x)
+                        break
             else:
                 if self.inventory.count(item) > 0:
                     self.inventory.remove(item)
-                if self.wear.count(item) > 0:
+                elif self.wear.count(item) > 0:
                     self.wear.remove(item)
-                for x in self.inventory:
-                    if x.name == item.name:
-                        self.inventory.remove(x)
+                        
+        def getItem(self,id):
+            for x in self.inventory:
+                if x.id == id:
+                    return x
+            for x in self.wear:
+                if x.id == id:
+                    return x
+            return False
             
+        def countItems(self,id):
+            counter = 0
+            for x in self.inventory:
+                if x.id == id:
+                    counter += 1
+            return counter

@@ -46,39 +46,47 @@ init 10 python:
                 anotherDoor.addNav(self)
                 anotherDoor.location = locObj
                 locObj.doors.append(anotherDoor)
+                
+        def addItem(self, item):
+            self.items.append(item)
 
             
-            
+    def genLocs():
 # Генерация локаций
-    home = Location(
-        id = 'home',
-        name = 'Мой дом',
-        description = ['Мой дом.', 'Выглядит весьма бедно, но ведь я ещё и не начала!'],
-        type = 'private',
-        image = 'images/locations/home.png')
+        allLocs = []
+        home = Location(
+            id = 'home',
+            name = 'Мой дом',
+            description = ['Мой дом.', 'Выглядит весьма бедно, но ведь я ещё и не начала!'],
+            type = ['private'],
+            image = 'images/locations/home.png')
+        allLocs.append(home)
+            
+        chest = Location(
+            id = 'chest',
+            name = 'Мой сундук',
+            description = ['Обычный сундук', 'Я храню в нём награбленное и свои личные вещи'],
+            type = ['private','storing'],
+            image = 'images/locations/chest.png')
+        allLocs.append(chest)
         
-    chest = Location(
-        id = 'chest',
-        name = 'Мой сундук',
-        description = ['Обычный сундук', 'Я храню в нём награбленное и свои личные вещи'],
-        type = 'private',
-        image = 'images/locations/chest.png')
+        street = Location(
+            id = 'street',
+            name = 'Улица',
+            description = ['Улица, как улица', 'Никого особо не видно.'],
+            type = ['public'],
+            image = 'images/locations/street.png')
+        allLocs.append(street)
         
-    street = Location(
-        id = 'street',
-        name = 'Улица',
-        description = ['Улица, как улица', 'Никого особо не видно.'],
-        type = 'street',
-        image = 'images/locations/village.png')
+        # Проставление прямых навигаций
+        home.addNav(chest) # Из дома мы можем переместится в сундук
+        chest.addNav(home) # Из сундука в дом
 
-# Проставление прямых навигаций
-    home.addNav(chest) # Из дома мы можем переместится в сундук
-    chest.addNav(home) # Из сундука в дом
-
-# Проставление дверей:
-    street.addDoor('simpleDoor', home)
-    # home.addDoor('simpleDoor', street)
+        # Проставление дверей:
+        street.addDoor('simpleDoor', home)
+        # home.addDoor('simpleDoor', street)
     
+        return allLocs
                 
             
             

@@ -15,8 +15,9 @@ init -50 python:
             self.stolen = True
             
     class Tool(Item):
-        def __init__ (self, effects):
+        def __init__ (self, effects, stolen = False):
             self.effects = effects
+            self.stolen = stolen
             
             
         def addEffect(self,effect):
@@ -26,9 +27,10 @@ init -50 python:
                     
                     
     class Clothes(Item):
-        def __init__ (self, parts, effects):
+        def __init__ (self, parts, effects, stolen = False):
             self.parts = parts
             self.effects = effects
+            self.stolen = stolen
             
         def addEffect(self,effect):
             for x in allEffects:
@@ -63,6 +65,19 @@ init -50 python:
         thiefArmor.effects
         allItems.append(thiefArmor)
         
+        nothing = Clothes(parts = ['body'], effects = [] )
+        nothing.name = 'Ничего не надето'
+        nothing.id = 'nothing'
+        nothing.cost = 1000
+        nothing.description = 'Полностью обнажиться'
+        nothing.picto = 'images/noimage.gif'
+        nothing.type = ['clothes']
+        nothing.weight = 15
+        nothing.durability = 10000
+        nothing.addEffect('dex2plus')
+        nothing.effects
+        allItems.append(nothing)
+        
     def getClothById(id):
         for x in allItems:
             if x.id == id:
@@ -75,7 +90,7 @@ init -50 python:
         lockpick.id = 'lockpick'
         lockpick.cost = 100
         lockpick.description = 'Простая отмычка, лучший друг взломщика!'
-        lockpick.picto = 'images/noimage.gif'
+        lockpick.picto = 'images/items/lockpick.png'
         lockpick.type = ['tool']
         lockpick.weight = 1
         lockpick.durability = 10
@@ -87,7 +102,7 @@ init -50 python:
         instrument.id = 'instrument'
         instrument.cost = 100
         instrument.description = 'Инструмент для обезвреживания ловушек.'
-        instrument.picto = 'images/noimage.gif'
+        instrument.picto = 'images/items/instrument.png'
         instrument.type = ['tool']
         instrument.weight = 10
         instrument.durability = 100

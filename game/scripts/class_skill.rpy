@@ -1,6 +1,6 @@
 init -50 python:
     class Skill:
-        def __init__ (self, name, id, type, ability, picto = 'images/noimage.gif', description = ''):
+        def __init__ (self, name, id, type, ability, picto = 'images/noimage.gif', description = '', level = 1):
             self.name = name
             self.id = id
             self.type = type
@@ -87,7 +87,7 @@ init -50 python:
             id = 'acrobatics',
             type = ['dex','player','npc'],
             ability = '',
-            description = ''
+            description = 'Позволяет успешно преодолевать различные препятствия, держать баланс и так далее.'
         )
         allSkills.append(acrobatics)
         
@@ -96,7 +96,7 @@ init -50 python:
             id = 'dexOfHand',
             type = ['dex','player'],
             ability = '',
-            description = ''
+            description = 'Позволяет незаметно лазить по карманам и воровать различные мелкие вещи.'
         )
         allSkills.append(dexOfHand)
         
@@ -105,7 +105,7 @@ init -50 python:
             id = 'stealth',
             type = ['dex','player','npc'],
             ability = '',
-            description = ''
+            description = 'Умение прятаться от чужого взгляда.'
         )
         allSkills.append(stealth)
         
@@ -114,7 +114,7 @@ init -50 python:
             id = 'arcana',
             type = ['int','player'],
             ability = '',
-            description = ''
+            description = 'Знание о магии, иномирных существах, свитках и прочем.'
         )
         allSkills.append(arcana)
         
@@ -123,7 +123,7 @@ init -50 python:
             id = 'persuasion',
             type = ['cha','player'],
             ability = '',
-            description = ''
+            description = 'Умение убедить собеседника в своей правоте.'
         )
         allSkills.append(persuasion)
         
@@ -132,7 +132,7 @@ init -50 python:
             id = 'nature',
             type = ['int','player','npc'],
             ability = '',
-            description = ''
+            description = 'Знание о природе, животных, умение находить следы в лесу.'
         )
         allSkills.append(nature)
         
@@ -141,7 +141,7 @@ init -50 python:
             id = 'investigation',
             type = ['int','player','npc'],
             ability = '',
-            description = ''
+            description = 'Возможность делать аналитические выводы на основе известных фактов.'
         )
         allSkills.append(investigation)
         
@@ -150,7 +150,7 @@ init -50 python:
             id = 'insight',
             type = ['wis','player','npc'],
             ability = '',
-            description = ''
+            description = 'Умение понять подноготную человека, распознать обман, выяснить его текущие желания.'
         )
         allSkills.append(insight)
         
@@ -159,7 +159,7 @@ init -50 python:
             id = 'medicine',
             type = ['wis','player'],
             ability = '',
-            description = ''
+            description = 'Умение врачевать раны.'
         )
         allSkills.append(medicine)
         
@@ -168,7 +168,7 @@ init -50 python:
             id = 'perception',
             type = ['wis','player','npc'],
             ability = '',
-            description = ''
+            description = 'Возможность стать более внимательным, подмечать мелкие детали, искать ловушки и тех, кто хочет своровать у вас.'
         )
         allSkills.append(perception)
         
@@ -177,7 +177,7 @@ init -50 python:
             id = 'deception',
             type = ['cha','player','npc'],
             ability = '',
-            description = ''
+            description = 'Возможность успешно обмануть собеседника.'
         )
         allSkills.append(deception)
         
@@ -186,7 +186,7 @@ init -50 python:
             id = 'intimidation',
             type = ['cha','player'],
             ability = '',
-            description = ''
+            description = 'Умение запугать собеседника.'
         )
         allSkills.append(intimidation)
         
@@ -195,7 +195,7 @@ init -50 python:
             id = 'performance',
             type = ['wis','player'],
             ability = '',
-            description = ''
+            description = 'Перевоплощения, возможность играть в театре, показывать представления.'
         )
         allSkills.append(performance)
         
@@ -204,7 +204,7 @@ init -50 python:
             id = 'breaking',
             type = ['dex','player'],
             ability = '',
-            description = ''
+            description = 'Умение вскрывать замки.'
         )
         allSkills.append(breaking)
         
@@ -213,7 +213,7 @@ init -50 python:
             id = 'disarm',
             type = ['dex','player'],
             ability = '',
-            description = ''
+            description = 'Умение обезвреживать ловушки, если вы, конечно, знаете как это надо делать.'
         )
         allSkills.append(disarm)
     

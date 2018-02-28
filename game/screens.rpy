@@ -71,23 +71,22 @@ screen choice:
         style "menu_window"
         xalign 0.5
         yalign 0.5
+        frame:
+            vbox:
+                style "menu"
+                spacing 2
+                
+                for caption, action, chosen in items:
+                    
+                    if action:
+                        button:
+                            action action
+                            style "menu_choice_button"
 
-        vbox:
-            style "menu"
-            spacing 2
+                            text caption style "menu_choice"
 
-            for caption, action, chosen in items:
-
-                if action:
-
-                    button:
-                        action action
-                        style "menu_choice_button"
-
-                        text caption style "menu_choice"
-
-                else:
-                    text caption style "menu_caption"
+                    else:
+                        text caption style "menu_caption"
 
 init -2 python:
     config.narrator_menu = True
@@ -96,8 +95,8 @@ init -2 python:
     style.menu_choice.set_parent(style.button_text)
     style.menu_choice.clear()
     style.menu_choice_button.set_parent(style.button)
-    style.menu_choice_button.xminimum = int(config.screen_width * 0.75)
-    style.menu_choice_button.xmaximum = int(config.screen_width * 0.75)
+    style.menu_choice_button.xminimum = 1280
+    style.menu_choice_button.xmaximum = 1280
 
 
 ##############################################################################
@@ -181,7 +180,10 @@ screen main_menu:
     # window:
         # style "mm_root"
     add '#000000'
-    add 'images/intro.png'
+    add 'images/intro.png' at center
+    add 'images/title.png' at center,top
+    frame xpos 1.0 ypos 0.0 xanchor 1.0:
+        text ('Версия: ' + config.version)
     # Кнопки главного меню.
     frame:
         style_group "mm"
@@ -377,8 +379,15 @@ screen preferences:
                 has vbox
 
                 textbutton _("Джойстик...") action Preference("joystick")
-
-
+                       
+            frame:
+                style_group "pref"
+                has vbox
+                if showDiceThrows == 0:
+                    textbutton _("Показывать броски кубика") action SetVariable('showDiceThrows', 1)
+                else:
+                    textbutton _("Не показывать броски кубика") action SetVariable('showDiceThrows', 0)
+                    
         vbox:
             frame:
                 style_group "pref"

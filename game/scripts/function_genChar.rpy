@@ -46,8 +46,16 @@ init -2 python:
             else:
                 tempChar = Char.random('female', 'images/noimage.gif')
             tempChar.autoLevel(rand(0,2))
+            if tempChar.lname in ['Дворянин', 'Дворянка']:
+                tempChar.autoLevel(rand(5,10))
+            elif tempChar.lname in ['Стражник']:
+                tempChar.autoLevel(rand(8,10))
+            elif tempChar.lname in ['Наёмник']:
+                tempChar.autoLevel(rand(5,15))
+                tempChar.togglePerception()
             for x in allItems:
                 # if rand(1,10) == 1:
                 tempChar.addItem(x)
+            tempChar.addSkill(choice(allSkills).id)
             tempArr.append(tempChar)
         return tempArr

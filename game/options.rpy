@@ -47,44 +47,44 @@ init -1 python hide:
     ## Функция темы берет несколько параметров, которые
     ## настраивают цветовую схему.
 
-    theme.tv(
-        ## Theme: TV
-        ## Color scheme: Colorblind
+    theme.austen(
+        ## Theme: Austen
+        ## Color scheme: White Chocolate
 
         ## The color of an idle widget face.
-        widget = "#898989",
+        widget = "#33271C",
 
         ## The color of a focused widget face.
-        widget_hover = "#464646",
+        widget_hover = "#ECE7C4",
 
         ## The color of the text in a widget.
-        widget_text = "#CCCCCC",
+        widget_text = "#B99D83",
 
         ## The color of the text in a selected widget. (For
         ## example, the current value of a preference.)
-        widget_selected = "#F2F2F2",
+        widget_selected = "#ffffff",
 
         ## The color of a disabled widget face.
-        disabled = "#898989",
+        disabled = "#614D3A",
 
         ## The color of disabled widget text.
-        disabled_text = "#666666",
+        disabled_text = "#80654D",
 
         ## The color of informational labels.
-        label = "#c2c2c2",
+        label = "#F1EBE5",
 
         ## The color of a frame containing widgets.
-        frame = "#252525",
+        frame = "#926841",
 
         ## The background of the main menu. This can be a color
         ## beginning with '#', or an image filename. The latter
         ## should take up the full height and width of the screen.
-        mm_root = "#393939",
+        mm_root = "#FBF9EA",
 
         ## The background of the game menu. This can be a color
         ## beginning with '#', or an image filename. The latter
         ## should take up the full height and width of the screen.
-        gm_root = "#393939",
+        gm_root = "#FBF9EA",
 
         ## If this is True, the in-game window is rounded. If False,
         ## the in-game window is square.

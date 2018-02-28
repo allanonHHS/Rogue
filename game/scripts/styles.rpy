@@ -26,6 +26,9 @@ init python:
     style.action_button_text.outlines = [(1, "#494949", 0, 0)]
     style.action_button_text.hover_color = "#FF0010AA"
     
+    # style.new_choce_button = Style(style.menu_choice_button)
+    style.menu_choice.color = "#FFFFFF"
+    style.menu_choice.xalign = 0.5
     
     style.small_button = Style(style.button_text)
     style.small_button_text.color = "#FFFFFF"
@@ -129,8 +132,8 @@ style verticalText is text:
     outlines [(2, "#494949", 0, 0)]
 
 style param is text:
-    size 15
-    outlines [(2, "#494949", 0, 0)]
+    size 20
+    outlines [(1, "#494949", 0, 0)]
     bold True
     # drop_shadow [ (2, 1) ,(3, 2)] 
 
