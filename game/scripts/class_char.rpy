@@ -351,6 +351,9 @@ init -20 python:
             
         def incEnergy(self,amount):
             self.stats.energy += int(amount)
+            
+        def getMaxEnergy(self):
+            return 500 + self.getCONmod()*100 + self.getSTRmod()*100 + 100*self.getLevel()
 ########################################################################################
         def getMoney(self):
             return self.money
@@ -390,12 +393,25 @@ init -20 python:
         def getWeight(self):
             return self.getSTR()*15
 ########################################################################################
+        def getSex(self,*args):
+            if len(args) == 0:
+                return self.body.sex()
+            else:
+                if args[0] == 'mf':
+                    if self.body.sex() == 'male':
+                        return self.body.sex()
+                    else:
+                        return 'female'
+                        
         def checkLevel(self):
             global level, statInc, skillInc
             if level[self.getLevel()+1] <= self.getExp():
                 if self.getLevel() + 1 in [4,8,10,12,16,19]:
                     statInc += 1
                 skillInc += 1
+                self.incLevel()
+                self.recountMaxHP()
+                self.setHP(self.stats.maxHP)
                 
         def getNextLevelExp(self):
             global level
@@ -449,7 +465,8 @@ init -20 python:
                 
         def recountMaxHP(self):
             self.stats.maxHP = 8 + (self.stats.con-10)/2 + (5 + (self.stats.con-10)/2)*(self.stats.level - 1)
-        
+
+            
         def autoLevel(self, count):
             for temp in range(0, count):
                 self.stats.level += 1
@@ -512,38 +529,43 @@ init -20 python:
             for x in allSkills:
                 if x.id == skill or x.name == skill:
                     skill = x
+                    
+            dice_throw = dice(self)
             
             if skill.id == 'perception' and 'alarm' not in self.state:
                 dice_throw = 10
-            else:
-                dice_throw = dice(self)
-            itemsStrength = 0
             
-            for effect in self.effects: # перебираем эффекты
-                if skill.id in effect.type: # если скилл есть в эффектах
-                    itemsStrength += effect.strength # Усиляем
-                if self.getTool() != False: # если испольуется тул
-                    for x in self.getTool().effects: # перебираем эффекты тула
-                        if skill.id in effect.type: # Если скилл есть в эффектах тула
-                            self.getTool().durability -= 1 # Используем тул
-                            break
-                                
+            if skill.id == 'stealth' and 'sneak' not in self.state:
+                dice_throw = -100
+                
+            itemsStrength = 0
+            if skill.id not in ['str','dex','con','wis','int','cha']:
+                for effect in self.effects: # перебираем эффекты
+                    if skill.id in effect.type: # если скилл есть в эффектах
+                        itemsStrength += effect.strength # Усиляем
+                        
+                    if self.getTool() != False: # если испольуется тул
+                        for x in self.getTool().effects: # перебираем эффекты тула
+                            if skill.id in effect.type: # Если скилл есть в эффектах тула
+                                self.getTool().durability -= 1 # Используем тул
+                                break
+
             self.checkDurability()
             stringToReturn = 'Брск %d + %s %d + Прд %d + Умн %d = %d'
             
             if isinstance(skill,Skill):
                 if 'str' in skill.type:
-                    toReturn = [dice_throw + self.getSTRmod() + + skill.getPower(self), stringToReturn % (dice_throw, 'СИЛ', self.getSTRmod(), itemsStrength, skill.getPower(self), dice_throw + self.getSTRmod() + skill.getPower(self))]
+                    toReturn = [dice_throw + self.getSTRmod() + itemsStrength + skill.getPower(self), stringToReturn % (dice_throw, 'СИЛ', self.getSTRmod(), itemsStrength, skill.getPower(self), dice_throw + self.getSTRmod() + skill.getPower(self) + itemsStrength)]
                 elif 'dex' in skill.type:
-                    toReturn = [dice_throw + self.getDEXmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ЛОВ',self.getDEXmod(), itemsStrength, skill.getPower(self), dice_throw + self.getDEXmod() + skill.getPower(self) + itemsStrength)]
+                    toReturn = [dice_throw + self.getDEXmod() + itemsStrength + skill.getPower(self), stringToReturn % (dice_throw, 'ЛОВ',self.getDEXmod(), itemsStrength, skill.getPower(self), dice_throw + self.getDEXmod() + skill.getPower(self) + itemsStrength)]
                 elif 'con' in skill.type:
-                    toReturn = [dice_throw + self.getCONmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ВЫН',self.getCONmod(), itemsStrength, skill.getPower(self), dice_throw + self.getCONmod() + skill.getPower(self) + itemsStrength)]
+                    toReturn = [dice_throw + self.getCONmod() + itemsStrength + skill.getPower(self), stringToReturn % (dice_throw, 'ВЫН',self.getCONmod(), itemsStrength, skill.getPower(self), dice_throw + self.getCONmod() + skill.getPower(self) + itemsStrength)]
                 elif 'wis' in skill.type:
-                    toReturn = [dice_throw + self.getWISmod() + skill.getPower(self), stringToReturn % (dice_throw, 'МУД', self.getWISmod(),itemsStrength, skill.getPower(self), dice_throw + self.getWISmod() + skill.getPower(self) + itemsStrength)]
+                    toReturn = [dice_throw + self.getWISmod() + itemsStrength + skill.getPower(self), stringToReturn % (dice_throw, 'МУД', self.getWISmod(),itemsStrength, skill.getPower(self), dice_throw + self.getWISmod() + skill.getPower(self) + itemsStrength)]
                 elif 'int' in skill.type:
-                    toReturn = [dice_throw + self.getINTmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ИНТ', self.getINTmod(),itemsStrength, skill.getPower(self), dice_throw + self.getINTmod() + skill.getPower(self) + itemsStrength)]
+                    toReturn = [dice_throw + self.getINTmod() + itemsStrength + skill.getPower(self), stringToReturn % (dice_throw, 'ИНТ', self.getINTmod(),itemsStrength, skill.getPower(self), dice_throw + self.getINTmod() + skill.getPower(self) + itemsStrength)]
                 elif 'cha' in skill.type:
-                    toReturn = [dice_throw + self.getCHAmod() + skill.getPower(self), stringToReturn % (dice_throw, 'ХАР', self.getCHAmod(),itemsStrength, skill.getPower(self), dice_throw + self.getCHAmod() + skill.getPower(self) + itemsStrength)]
+                    toReturn = [dice_throw + self.getCHAmod() + itemsStrength + skill.getPower(self), stringToReturn % (dice_throw, 'ХАР', self.getCHAmod(),itemsStrength, skill.getPower(self), dice_throw + self.getCHAmod() + skill.getPower(self) + itemsStrength)]
             else:
                 toReturn = [dice_throw, 'Кубик-%d' % (dice_throw)]
             
@@ -613,6 +635,15 @@ init -20 python:
                 if type in x.type:
                     effectStrength += x.strength
             return effectStrength
+            
+        def removeEffect(self, effect):
+            if isinstance(effect, basestring):
+                for x in self.effects:
+                    if x.id == effect or x.name == effect:
+                        self.effects.remove(x)
+                        break
+            else:
+                self.effects.remove(effect)
             
         def recountEffects(self):
             global mtime

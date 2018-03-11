@@ -32,6 +32,43 @@ init -51 python:
         )
         allEffects.append(disarm)
         
+        unlock1000 = Effect(
+            name = 'Взлом',
+            id = 'unlock1000',
+            type = ['breaking','item'],
+            strength = 1000,
+            description = '+1000 ко взлому'
+        )
+        allEffects.append(unlock1000)
+        
+        disarm1000 = Effect(
+            name = 'Обезвреживание',
+            id = 'disarm1000',
+            type = ['disarm','item'],
+            strength = 1000,
+            description = '+1000 к обезвреживанию.'
+        )
+        allEffects.append(disarm1000)
+        
+        unlock2 = Effect(
+            name = 'Взлом',
+            id = 'unlock2',
+            type = ['breaking','item'],
+            strength = 2,
+            description = '+2 ко взлому'
+        )
+        allEffects.append(unlock2)
+        
+        disarm2 = Effect(
+            name = 'Обезвреживание',
+            id = 'disarm2',
+            type = ['disarm','item'],
+            strength = 2,
+            description = '+2 к обезвреживанию.'
+        )
+        allEffects.append(disarm2)
+        
+        
         dex2plus = Effect(
             name = 'Бонус ловкости',
             id = 'dex2plus',
@@ -68,4 +105,38 @@ init -51 python:
         )
         allEffects.append(cha2minus)
     
-    
+        tiredDEX = Effect(
+            name = 'Усталость: штраф к ловкости',
+            id = 'tiredDEX',
+            type = ['dex'],
+            strength = -4,
+            description = '-4 к локвости.'
+        )
+        allEffects.append(tiredDEX)
+        
+        tiredCHA = Effect(
+            name = 'Усталость: штраф к обаянию',
+            id = 'tiredCHA',
+            type = ['cha'],
+            strength = -4,
+            description = '-4 к обаянию.'
+        )
+        allEffects.append(tiredCHA)
+        
+        deadTiredDEX = Effect(
+            name = 'Обессиленность: штраф к ловкости',
+            id = 'deadTiredDEX',
+            type = ['dex'],
+            strength = -8,
+            description = '-8 к ловкости.'
+        )
+        allEffects.append(deadTiredDEX)
+        
+        deadTiredCHA = Effect(
+            name = 'Обессиленность: штраф к обаянию',
+            id = 'deadTiredCHA',
+            type = ['cha'],
+            strength = -8,
+            description = '-8 к обаянию.'
+        )
+        allEffects.append(deadTiredCHA)

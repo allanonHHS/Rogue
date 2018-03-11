@@ -6,7 +6,9 @@
 # Экран отображения ADV-диалога.
 # http://www.renpy.org/doc/html/screen_special.html#say
 screen say:
-
+    if intro == 0:
+        use diceTrows
+        use stats(curloc)
     # Умолчания для side_image и two_window
     default side_image = None
     default two_window = False
@@ -55,8 +57,7 @@ screen say:
 
     # Использовать быстрое меню.
     use quick_menu
-    if intro == 0:
-        use diceTrows
+        
 
 
 ##############################################################################

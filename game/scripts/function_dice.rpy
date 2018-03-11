@@ -6,8 +6,8 @@ init -21 python:
     from operator import itemgetter, attrgetter, methodcaller
     
     def dice(char):
-        if char == player:
-            temp = randint(1, 20)
+        if char.hasSkill('luck'):
+            temp = max(randint(1, 20), randint(1, 20))
         else:
             temp = randint(1, 20)
             
@@ -17,7 +17,7 @@ init -21 python:
         if temp == 1:
             return - 100
             
-        return randint(1, 20)
+        return temp
         
     def rand(a, b):
         if a - b >= 0 or b == 0:
@@ -40,7 +40,7 @@ init -21 python:
             if what[0] >= where[0]:
                 if hidden == False:
                     diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Успех!')
-                    player.incExp(exp)
+                player.incExp(exp)
                 return True
             else:
                 if hidden == False:
@@ -50,7 +50,7 @@ init -21 python:
             if what[0] >= where:
                 if hidden == False:
                     diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Успех!')
-                    player.incExp(exp)
+                player.incExp(exp)
                 return True
             else:
                 if hidden == False:

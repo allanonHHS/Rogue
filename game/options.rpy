@@ -21,8 +21,8 @@ init -1 python hide:
     config.developer = True
     config.hard_rollback_limit = 0
     config.imagemap_cache = False
-    # config.save_physical_size=False
-    
+    config.save_physical_size=False
+    config.gl_resize = True
     ## Эти управляют шириной и высотой экрана.
 
     config.screen_width = 1980

@@ -217,4 +217,20 @@ init -50 python:
         )
         allSkills.append(disarm)
     
-    
+        seduction = Skill(
+            name = 'Соблазнение',
+            id = 'seduction',
+            type = ['cha','player', 'npc'],
+            ability = '',
+            description = 'Естественное женское очарование. Возможность добиться чего то не общепринятым, но вполне эффективным способом.'
+        )
+        allSkills.append(seduction)
+        
+        luck = Skill(
+            name = 'Удача',
+            id = 'seduction',
+            type = ['none','player', 'npc'],
+            ability = '',
+            description = 'Кость кидается два раза с выбором наибольшего результата.'
+        )
+        allSkills.append(seduction)

@@ -47,7 +47,7 @@ init 10 python:
                     
     def checkDoorTrap(door):
         for item in door.container:
-            if isinstance(item, Trap):
+            if isinstance(item, Trap) and item.found == False:
                 if isSuccess(player.useSkill('perception'), item.difficulty, hidden = True, exp = 2*item.difficulty):
                     item.find()
                     
@@ -89,6 +89,12 @@ init 10 python:
             
     def unlock(lock, door):
         if isinstance(lock, Lock):
+            if 'guarded' in curloc.type:
+                for x in curloc.people:
+                    if isSuccess(player.useSkill('stealth'), x.useSkill('perception'), 'Скрываюсь от '+ x.fname +': ') == False:
+                        clrscr()
+                        renpy.jump('stealth_catched')
+
             if isSuccess(player.useSkill('breaking'), lock.difficulty, 'Взлом: ', exp = lock.difficulty*5):
                 lock.unlock()
                 changetime(10)
@@ -155,6 +161,8 @@ init 10 python:
             return 'images/outfit/zero13.png'
         elif player.getBodyPart().id == 'womanClothes':
             return 'images/outfit/zero3.png'
+        elif player.getBodyPart().id == 'manClothes':
+            return 'images/outfit/zero15.png'
         else:
             return 'images/noimage.gif'
             
@@ -174,12 +182,15 @@ init 10 python:
     
 # Скрин, показывающй все локации
 screen location(locObj):
+    
     add locObj.image xpos 0.5 xanchor 0.5# Отображам картинку
+    if (hour < 7 or hour >21) and 'outside' in curloc.type:
+        add 'images/night.png' xpos 0.5 xanchor 0.5 #накладываем сверху ночь
     
     # frame xpos 0.01 ypos 0.01: # Слева отображаем имя локации
         # text(locObj.name) 
     
-    frame xpos 350 ypos 725: # Внизу перебираем массив описаний и выводим строчку за строчкой
+    frame xpos 350 ypos 725 xminimum 1280 xmaximum 1280: # Внизу перебираем массив описаний и выводим строчку за строчкой
         has vbox
         for x in locObj.description:
             text(x)
@@ -188,10 +199,14 @@ screen location(locObj):
         vbox:
             textbutton 'Карманы' xmaximum 300 xminimum 300 action [Show('inventory')]
             textbutton 'Осмотреться' xmaximum 300 xminimum 300 action [Function(changetime, 5), Function(move, curloc)]
-            if curloc.id in ['home']:
+            textbutton 'Журнал' xmaximum 300 xminimum 300 action [Show('journal')]
+            if 'sleep' in curloc.type:
                 textbutton 'Гардероб' xmaximum 300 xminimum 300 action Show('wardrobe')
+                textbutton 'Спать' xmaximum 300 xminimum 300 action Jump('sleep')
             if 'storing' in locObj.type:
                 textbutton 'Сложить ворованное' xmaximum 300 xminimum 300 action Function(dropItems)
+            if 'wait' in curloc.type:
+                textbutton 'Подождать часок' xmaximum 300 xminimum 300 action Jump('wait')
             if len(locObj.items) > 0:
                 textbutton 'Обыскать' xmaximum 300 xminimum 300 action Show('locationItems')
             null height 15
@@ -199,10 +214,28 @@ screen location(locObj):
                 textbutton x.name xmaximum 300 xminimum 300 action [Function(move, x)]
                 
             for x in locObj.doors:
-                textbutton x.name + ':' + x.getLocName() xmaximum 300 xminimum 300 action doorAction(x)
+                textbutton x.name + ': ' + x.getLocName() xmaximum 300 xminimum 300 action doorAction(x)
                 
-    if development == 1:
-        textbutton 'test' action Jump('test') xpos 0.5 ypos 0.5
+##########################################################
+# Дополнительные "эвентовые" кнопки
+########################################################### 
+            null height 15
+            
+            if trigger[0] == 0 and trigger[2] == 1 and locObj.id in ['severGate','zapadGate','ugGate']:
+                textbutton 'Столб' xmaximum 300 xminimum 300 action Jump('pillar')
+                
+            if trigger[0] == 1 and locObj.id in ['severGate','zapadGate','ugGate'] and locObj.getCharByName('Купец') != False:
+                textbutton 'Спрятаться в повозке купца' xmaximum 300 xminimum 300 action Jump('wagonHide')
+                
+            if trigger[12] == 1 and locObj.id == 'freeRoom' and hour in [22, 23, 0]:
+                textbutton 'Лечь в ожидании Фрэнка' xmaximum 300 xminimum 300 action Jump('sexFrank')
+                
+            
+########################################################### 
+########################################################### 
+###########################################################  
+    # if development == 1:
+        # textbutton 'test' action Jump('test') xpos 0.5 ypos 0.5
 
                 
     use stats(locObj)
@@ -225,6 +258,7 @@ screen stats(locObj):
                 text(player.name)
                 text('HP ' + str(player.getHP()) + ' / ' + str(player.stats.maxHP)) style 'param'
                 text('EXP ' + str(player.getExp()) + ' / ' + str(player.getNextLevelExp())) style 'param'
+                text('Энергичность ' + str(player.getEnergy()) + ' / ' + str(player.getMaxEnergy())) style 'param'
                 if statInc > 0 or skillInc > 0:
                     textbutton 'Повысить уровень' action Show('levelUp')
                 else:
@@ -285,7 +319,7 @@ screen unlock(door):
         action Hide('unlock')
     zorder 1
     modal True
-    frame ypos 250 xalign 0.5 xminimum 250:
+    frame ypos 250 xalign 0.5 xminimum 250 xmaximum 300:
         vbox xalign 0.5:
             if development == 1:
                 text('Замки ' + str(len(door.getLocks())))
@@ -347,7 +381,7 @@ screen unlock(door):
 screen displayTool(tool):
     zorder 1
     # frame xpos 1130 ypos 500:
-    frame xpos renpy.get_mouse_pos()[0] ypos renpy.get_mouse_pos()[1]:
+    frame xpos renpy.get_mouse_pos()[0] ypos renpy.get_mouse_pos()[1] xmaximum 400:
         hbox:
             add im.FactorScale(tool.picto,0.5)
             vbox:
@@ -375,16 +409,6 @@ screen displayTime:
         vbox:
             text currtime # style style.description xalign 0.99
             text temtime
-                    
-screen unlockSuccess:
-    frame xpos 0.5 ypos 0.3 xalign 0.5:
-        text ('Удача!')
-    timer 1.0 action Hide("unlockSuccess")
-    
-screen unlockFail:
-    frame xpos 0.5 ypos 0.3 xalign 0.5:
-        text ('Неудача!')
-    timer 1.0 action Hide("unlockFail")
                 
 # Костыль, с помощью которого вызываем скрин локаций
 label location_label:
@@ -441,7 +465,8 @@ screen choiceCharAction(char):
         $ xcoord = renpy.get_mouse_pos()[0]
     frame xpos xcoord ypos renpy.get_mouse_pos()[1]:
         has vbox
-        textbutton 'Поговорить' action [] xminimum 250
+        if char.do != '':
+            textbutton 'Поговорить' action [Hide('choiceCharAction'), SetVariable('currChar', char), Jump(char.do)] xminimum 250
         textbutton 'Проверить карманы' action Function(checkPocket, char) xminimum 250
         textbutton 'Отойти' action Hide('choiceCharAction') xminimum 250
             
@@ -536,7 +561,7 @@ screen inventory:
 
 screen itemDetails(item):
     zorder 1
-    frame xpos renpy.get_mouse_pos()[0] ypos renpy.get_mouse_pos()[1]:
+    frame xpos renpy.get_mouse_pos()[0] ypos renpy.get_mouse_pos()[1] xmaximum 400:
         vbox:
             add item.picto
             text(item.name)
@@ -635,4 +660,26 @@ screen diceTrows:
                     diceTrowsArr.pop(0)
             for x in reversed(diceTrowsArr):
                 text(x) style 'smallText'
+                
+screen journal:
+    zorder 1
+    modal True
+    imagebutton:
+        idle 'images/bg.png'
+        hover 'images/bg.png'
+        action Function(move, curloc)
+    frame xalign 0.5 ypos 0.1 xminimum 1280 xmaximum 1280:
+        hbox:
+            vbox:
+                if len(city_entry) > 0:
+                    textbutton 'Дорога в город' action SetVariable('quest_fields', city_entry)
+                if len(quest_elsa) > 0:
+                    textbutton 'Эльза' action SetVariable('quest_fields', quest_elsa)
+                if len(quest_frank) > 0:
+                    textbutton 'Фрэнк' action SetVariable('quest_fields', quest_frank)
+            vbox:
+                for x in quest_fields:
+                    text(x)
+                    null height 10
+                    
             

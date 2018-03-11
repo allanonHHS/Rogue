@@ -9,6 +9,9 @@ init:
     define father = Character("Отец", who_color="#79AEE8")
     define mother = Character("Мать", who_color="#79AEE8")
     define kupec = Character("Купец", who_color="#79AEE8")
+    define guard = Character("Стражник", who_color="#79AEE8")
+    define captain = Character("Капитан", who_color="#79AEE8")
+    define inquisitor = Character("Инквизитор", who_color="#B70300")
     
     image black = '#000000'
     
@@ -24,6 +27,7 @@ init:
         diceTrowsArr = ['Броски']
         diceText = ''
         prevloc = ''
+        outside = ''
         crutchLock = ''
         crutchDoor = ''
         crutchTrap = ''
@@ -57,6 +61,8 @@ init:
         level[19] = 305000
         level[20] = 355000
         level[21] = 405000
+        
+        currChar = ''
 # Игра начинается здесь.
 label start:
     jump generatePlayer
@@ -68,13 +74,14 @@ label after_load:
         genItems()
         genSkills()
         genEffect()
-        
+        diceTrowsArr = []
         newLocs = genLocs()
         for x in newLocs:
             for y in allLocs:
                 if x.id == y.id:
                     x.people = y.people
                     x.items = y.items
+                    x.doors = y.doors
                     y = x
                     if x.id == curloc.id:
                         curloc = x

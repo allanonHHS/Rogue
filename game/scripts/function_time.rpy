@@ -74,30 +74,35 @@ init -3 python:
         else:
             return 4
     
-    def changetime(change, *args):
+    def changetime(change, pure = False):
         global minute, check_minute, hour, ptime, weekday, number, year, month, mtime
         
-        if change < 30:
+        
+        timeMod = 1
+        if 'sneak' in player.state:
+            timeMod = timeMod*2
+            
+        if 'alarm' in player.state:
+            timeMod = timeMod*2
+            
+        if 'overweight' in player.state:
+            timeMod = timeMod*2
+        
+        if pure:
             timeMod = 1
-            if 'sneak' in player.state:
-                timeMod = timeMod*2
-                
-            if 'alarm' in player.state:
-                timeMod = timeMod*2
-                
-            if 'overweight' in player.state:
-                timeMod = timeMod*2
-                
-            change = change*timeMod
+        change = change*timeMod
+            
+        player.incEnergy(int(-change/2))
         
         while change != 0:
+            fastRecount()
             tempChange = min(10,change)
             change -= min(10,change)
             minute += tempChange
             mtime += tempChange
             counter = 0
             if minute >= 60:
-                # hourlyRecount()
+                hourlyRecount()
                 minute -= 60
                 hour += 1
                 ptime += 1
@@ -132,7 +137,49 @@ init -3 python:
 
     def hourlyRecount():
         global hour
-        return True
+        
+        if hour == 0:
+            trigger[20] = 0
+            trigger[21] = 0
+            trigger[22] = 0
+            trigger[14] = 0
+            
+        if trigger[9] < ptime and curloc.id != 'freeRoom':
+            getLocation('tavern').getDoor('tavernDoor1').lock()
+        
                 
-                
+    def fastRecount():
+        player.removeEffect('tiredDEX')
+        player.removeEffect('tiredCHA')
+        player.removeEffect('deadTiredDEX')
+        player.removeEffect('deadTiredCHA')
+        
+        if player.getEnergy() <= 0:
+            player.recountEffects()
+            player.applyEffect('deadTiredDEX')
+            player.applyEffect('deadTiredCHA')
+            
+        elif player.getEnergy() <= player.getMaxEnergy()/5:
+            player.recountEffects()
+            player.applyEffect('tiredDEX')
+            player.applyEffect('tiredCHA')
+        
+    def advancetime(change):
+        global minute, check_minute, hour, ptime, weekday, number, year, month, mtime, ltMoved, timeMoved, flagIncome, noEventTime
+        x = 0
+        while x < change:
+            if hour >= 5 and hour < 9:
+                hour = 5
+                advance = 4
+            elif hour >= 9 and hour < 17:
+                hour = 9
+                advance = 8
+            elif hour >= 17 and hour < 22:
+                hour = 17
+                advance = 5
+            else:
+                hour = 22
+                advance = 7
+            changetime(advance*60)
+            x += 1
                 

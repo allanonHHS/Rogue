@@ -62,8 +62,18 @@ init -50 python:
         thiefArmor.weight = 15
         thiefArmor.durability = 10000
         thiefArmor.addEffect('dex2plus')
-        thiefArmor.effects
         allItems.append(thiefArmor)
+        
+        manClothes = Clothes(parts = ['body','hands','legs'], effects = [] )
+        manClothes.name = 'Мужская одежда'
+        manClothes.id = 'manClothes'
+        manClothes.cost = 1000
+        manClothes.description = 'Мужская одежда. Не имеет ни бонусов ни недостатков.'
+        manClothes.picto = 'images/noimage.gif'
+        manClothes.type = ['clothes']
+        manClothes.weight = 15
+        manClothes.durability = 10000
+        allItems.append(manClothes)
         
         nothing = Clothes(parts = ['body'], effects = [] )
         nothing.name = 'Ничего не надето'
@@ -85,6 +95,18 @@ init -50 python:
         
         
     def genItems():
+        hairpin = Tool(effects = [])
+        hairpin.name = 'Заколка для волос'
+        hairpin.id = 'hairpin'
+        hairpin.cost = 10
+        hairpin.description = 'Заколка, для закалывания волос. Ловкие пальчики могут использовать её как отмычку!'
+        hairpin.picto = 'images/items/lockpick.png'
+        hairpin.type = ['tool']
+        hairpin.weight = 1
+        hairpin.durability = 10
+        hairpin.addEffect('unlock1')
+        allItems.append(hairpin)
+        
         lockpick = Tool(effects = [])
         lockpick.name = 'Простая отмычка'
         lockpick.id = 'lockpick'
@@ -93,7 +115,7 @@ init -50 python:
         lockpick.picto = 'images/items/lockpick.png'
         lockpick.type = ['tool']
         lockpick.weight = 1
-        lockpick.durability = 10
+        lockpick.durability = 1
         lockpick.addEffect('unlock')
         allItems.append(lockpick)
         
@@ -105,9 +127,33 @@ init -50 python:
         instrument.picto = 'images/items/instrument.png'
         instrument.type = ['tool']
         instrument.weight = 10
-        instrument.durability = 100
+        instrument.durability = 1
         instrument.addEffect('disarm')
         allItems.append(instrument)
+        
+        cheatTool = Tool(effects = [])
+        cheatTool.name = 'Мастер-Отмычка'
+        cheatTool.id = 'cheatTool'
+        cheatTool.cost = 100000
+        cheatTool.description = 'Для разработки.'
+        cheatTool.picto = 'images/items/instrument.png'
+        cheatTool.type = ['tool']
+        cheatTool.weight = 10
+        cheatTool.durability = 100000
+        cheatTool.addEffect('disarm1000')
+        cheatTool.addEffect('unlock1000')
+        allItems.append(cheatTool)
+        
+        coins = Item(
+            name = 'Мелочь',
+            id = 'coins',
+            cost = 5,
+            description = 'Маленькая горстка мелочи.',
+            picto = 'images/noimage.gif',
+            type = ['money','pocket','location'],
+            weight = 5
+            )
+        allItems.append(coins)
         
         smallMoneyBag = Item(
             name = 'Малый кошель',
@@ -141,3 +187,20 @@ init -50 python:
             weight = 15
             )
         allItems.append(bigMoneyBag)
+        
+        vexel = Item(
+            name = 'Вексель Фрэнка',
+            id = 'vexel',
+            cost = 100,
+            description = 'Вексель, который надо украсть для Фрэнка.',
+            picto = 'images/noimage.gif',
+            type = ['qwest'],
+            weight = 15
+            )
+        allItems.append(vexel)
+        
+    def getItem(id):
+        for x in allItems:
+            if x.id == id:
+                return x
+        return False
