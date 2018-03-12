@@ -72,6 +72,8 @@ init python:
         if location.id in ['severGate', 'zapadGate', 'ugGate']:
             location.people.append(genChar('guard'))
             location.people.append(genChar('guard'))
+            if rand(1,3) == 1 and hour in range(7,19):
+                location.people.append(genChar('merchant'))
             
         if location.id in ['tavern']:
             if hour in range(12,23):
@@ -132,10 +134,10 @@ init python:
         renpy.scene(layer='screens')
         
     def checkTriggers():
-        if trigger[1] == 0 and curloc.id in ['severArea','zapadArea','ugArea'] and player.getBodyPart().id == 'manClothes' and trigger[17] != 0:
+        if trigger[1] == 0 and curloc.id in ['severArea','zapadArea','ugArea'] and player.getBodyPart().id == 'manClothes' and trigger[18] != 1:
             renpy.jump('enterCityMan')
             
-        if trigger[1] == 0 and curloc.id in ['severArea','zapadArea','ugArea']:
+        if trigger[1] == 0 and curloc.id in ['severArea','zapadArea','ugArea']  and player.getBodyPart().id != 'manClothes':
             renpy.jump('enterCity')
             
         if hour in range(7,22) and 'generated' in curloc.type:

@@ -99,4 +99,11 @@ init -2 python:
             tempChar.autoLevel(rand(1,3))
             tempChar.lname = 'REPLACE'
             tempChar.name = tempChar.fname + ' ' + tempChar.lname
+        elif type == 'merchant':
+            tempChar = Char.random('male', 'images/noimage.gif')
+            tempChar.autoLevel(rand(1,3))
+            tempChar.lname = 'Купец'
+            tempChar.name = tempChar.fname + ' ' + tempChar.lname
+            tempChar.say = Character (tempChar.fullName(), kind=adv, dynamic = False, color = tempChar.color, show_side_image = Image(tempChar.picto, xalign=0.01, yalign=0.99), window_left_padding = 170)
+            tempChar.addSkill('insight')
         return tempChar

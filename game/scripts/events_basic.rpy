@@ -1,3 +1,9 @@
+label steal_decline:
+    show expression curloc.image at center,top as bgPic
+    show expression 'images/events/basic/decline.png' at center,top as tempPic
+    player.say '{color=#fff782}Мне не стоит воровать в этом месте.'
+    $ move(curloc)
+    
 label trap_simpleTrap:
     'Попалась!'
     $ move(curloc)
@@ -19,22 +25,31 @@ label stealth_catched:
     $ move(curloc)
     
 label sleep:
+    show expression curloc.image at center,top as bgPic
+    show expression 'images/events/basic/sleep.png' at center,top as tempPic
+    'Раздевшись, вы улеглись на грязную, пропахшую сотнями людей до вас кровать, и уснули. Несмотря на обстановку, вы прекрасно выспались!'
     python:
         player.state = []
         changetime(60*7)
         player.setHP(player.stats.maxHP)
         player.setEnergy(player.getMaxEnergy())
-    show expression curloc.image at center,top as bgPic
-    show expression 'images/events/basic/sleep.png' at center,top as tempPic
-    'Раздевшись, я улеглась на грязную, пропахшую сотнями людей до меня кровать, и уснула. Несмотря на обстановку, я прекрасно выспалась!'
-    $ move(curloc)
+        move(curloc)
     
 label wait:
-    $ player.state = []
-    $ changetime(60)
     show expression curloc.image at center,top as bgPic
     show expression 'images/events/basic/wait.png' at center,top as tempPic
-    'Я около часа просидела за столом со скучающим видом, ничего не заказывая.'
+    'Вы около часа просидели за столом со скучающим видом, ожидая чего-то или кого-то.'
+    $ player.state = []
+    $ changetime(60)
+    $ move(curloc)
+    
+label rest:
+    show expression curloc.image at center,top as bgPic
+    show expression 'images/events/basic/rest1.png' at center,top as tempPic
+    'Вы решили вздремнуть часок, чтобы восстановить немного сил.'
+    $ player.state = []
+    $ changetime(60)
+    $ player.incEnergy(60)
     $ move(curloc)
     
 label breaking_catch:

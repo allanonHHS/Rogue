@@ -228,9 +228,9 @@ init -50 python:
         
         luck = Skill(
             name = 'Удача',
-            id = 'seduction',
+            id = 'luck',
             type = ['none','player', 'npc'],
             ability = '',
             description = 'Кость кидается два раза с выбором наибольшего результата.'
         )
-        allSkills.append(seduction)
+        allSkills.append(luck)

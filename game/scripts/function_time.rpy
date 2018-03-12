@@ -143,6 +143,7 @@ init -3 python:
             trigger[21] = 0
             trigger[22] = 0
             trigger[14] = 0
+            trigger[19] = 0
             
         if trigger[9] < ptime and curloc.id != 'freeRoom':
             getLocation('tavern').getDoor('tavernDoor1').lock()

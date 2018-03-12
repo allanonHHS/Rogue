@@ -122,7 +122,7 @@ label generatePlayer:
         michael_wife.addSkill('insight')
         # michael_wife.do = 'speakmichael_wife'
         
-        dick = Char.random('male', 'images/noimage.gif')
+        dick = Char.random('male', 'images/picto/michael_helper_picto.png')
         dick.autoLevel(rand(1,2))
         dick.fname = 'Дик'
         dick.lname = 'Помощник'

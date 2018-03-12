@@ -207,7 +207,7 @@ init 10 python:
             id = 'tavern',
             name = 'Постоялый двор',
             description = ['Постоялый двор «Уют для странника».', 'Это единственное место, где можно снять комнату в пригороде.',''],
-            type = ['public','guarded', 'wait'],
+            type = ['public','guarded', 'wait', 'safe'],
             image = 'images/locations/tavern.png')
         allLocs.append(tavern)
         
@@ -215,7 +215,7 @@ init 10 python:
             id = 'freeRoom',
             name = 'Свободная комната',
             description = ['Комната в постоялом дворе'],
-            type = ['private','sleep', 'wait'],
+            type = ['private','sleep', 'safe'],
             image = 'images/locations/room1.png')
         allLocs.append(freeRoom)
         
@@ -223,13 +223,12 @@ init 10 python:
             id = 'elsaRoom',
             name = 'Комната Эльзы',
             description = ['Комната Эльзы'],
-            type = ['private'],
+            type = ['private','wait','safe'],
             image = 'images/locations/elsaRoom.png')
         allLocs.append(elsaRoom)
         
         tavern.addDoor('tavernDoor', freeRoom)
-        
-        tavern.addNav(elsaRoom)
+        tavern.addDoor('elsaDoor', elsaRoom)
         tavern.addNav(zapadPrigorod)
         
         tailor = Location(

@@ -73,6 +73,16 @@ init 8 python:
         )
     allLocks.append(lock20)
     
+    lock15 = Lock(
+        id = 'lock15',
+        name = 'Прочный замок',
+        description = 'Прочный замок',
+        image = 'images/noimage.gif',
+        type = 'lock15',
+        difficulty = 15
+        )
+    allLocks.append(lock15)
+    
     def getLock(type):
         tempArr = []
         for lock in allLocks:

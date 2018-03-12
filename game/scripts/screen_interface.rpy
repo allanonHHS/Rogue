@@ -52,6 +52,9 @@ init 10 python:
                     item.find()
                     
     def checkPocket(char):
+        if 'safe' in curloc.type:
+            clrscr()
+            renpy.jump('steal_decline')
         if isSuccess(player.useSkill('dexOfHand'), char.useSkill('perception'), 'Проверка карманов: ', exp = 10*char.getLevel()) == False:
             if isSuccess(player.useSkill('dex'), char.useSkill('dex'), 'Попытка увернуться: ') == False:
                 if isSuccess(player.useSkill('str'), char.useSkill('str'), 'Попытка вырваться: ') == False:
@@ -203,6 +206,7 @@ screen location(locObj):
             if 'sleep' in curloc.type:
                 textbutton 'Гардероб' xmaximum 300 xminimum 300 action Show('wardrobe')
                 textbutton 'Спать' xmaximum 300 xminimum 300 action Jump('sleep')
+                textbutton 'Вздремнуть часок' xmaximum 300 xminimum 300 action Jump('rest')
             if 'storing' in locObj.type:
                 textbutton 'Сложить ворованное' xmaximum 300 xminimum 300 action Function(dropItems)
             if 'wait' in curloc.type:
@@ -224,7 +228,7 @@ screen location(locObj):
             if trigger[0] == 0 and trigger[2] == 1 and locObj.id in ['severGate','zapadGate','ugGate']:
                 textbutton 'Столб' xmaximum 300 xminimum 300 action Jump('pillar')
                 
-            if trigger[0] == 1 and locObj.id in ['severGate','zapadGate','ugGate'] and locObj.getCharByName('Купец') != False:
+            if trigger[0] == 1 and locObj.id in ['severGate','zapadGate','ugGate'] and locObj.getCharByName('Купец') != False and player.getBodyPart().id != 'manClothes':
                 textbutton 'Спрятаться в повозке купца' xmaximum 300 xminimum 300 action Jump('wagonHide')
                 
             if trigger[12] == 1 and locObj.id == 'freeRoom' and hour in [22, 23, 0]:
@@ -266,15 +270,19 @@ screen stats(locObj):
         null height 20
             
         frame xpos 0.01 xminimum 345:
-            has vbox
-            if 'sneak' in player.state:
-                textbutton 'Прекратить красться' action [Function(player.toggleSneak)]
-            else:
-                textbutton 'Красться' action [Function(player.toggleSneak)]
-            if 'alarm' in player.state:
-                textbutton 'Не присматриваться' action [Function(player.togglePerception)]
-            else:
-                textbutton 'Быть внимательной' action [Function(player.togglePerception)]
+            vbox xalign 0.5:
+                if showDiceThrows == 0:
+                    textbutton _("Показывать броски") action SetVariable('showDiceThrows', 1) xmaximum 300 xminimum 300
+                else:
+                    textbutton _("Не показывать броски") action SetVariable('showDiceThrows', 0) xmaximum 300 xminimum 300
+                if 'sneak' in player.state:
+                    textbutton 'Прекратить красться' action [Function(player.toggleSneak)] xmaximum 300 xminimum 300
+                else:
+                    textbutton 'Красться' action [Function(player.toggleSneak)] xmaximum 300 xminimum 300
+                if 'alarm' in player.state:
+                    textbutton 'Не присматриваться' action [Function(player.togglePerception)] xmaximum 300 xminimum 300
+                else:
+                    textbutton 'Быть внимательной' action [Function(player.togglePerception)] xmaximum 300 xminimum 300
                 
 screen detailedStats(locObj):
     frame xalign 0.5 ypos 150:

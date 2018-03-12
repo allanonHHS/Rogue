@@ -1,9 +1,6 @@
-﻿# Вы можете расположить сценарий своей игры в этом файле.
+﻿ # show eileen happy at Position(xpos = 0.5, xanchor=0.5, ypos=0.5, yanchor=0.5)
 
-# Объявляйте изображения здесь, используя оператор image.
-# Например, image eileen happy = "eileen_happy.png"
 
-# Определение персонажей игры.
 init:
     define me = Character("Разработчик", who_color="#79AEE8")
     define father = Character("Отец", who_color="#79AEE8")
@@ -63,6 +60,7 @@ init:
         level[21] = 405000
         
         currChar = ''
+        
 # Игра начинается здесь.
 label start:
     jump generatePlayer

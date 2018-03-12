@@ -131,6 +131,17 @@ init 9 python:
     tavernDoor1.addLock('hardLock')
     allDoors.append(tavernDoor1)
     
+    elsaDoor = Door(
+        id = 'elsaDoor',
+        type = 'elsaDoor',
+        name = 'Деревянная дверь',
+        description = ['Обычная деревянная дверь'],
+        image = 'images/noimage.gif',
+        container = []
+        )
+    elsaDoor.addLock('hardLock')
+    allDoors.append(elsaDoor)
+    
     storeDoor1 = Door(
         id = 'storeDoor1',
         type = 'storeDoor',
@@ -139,7 +150,7 @@ init 9 python:
         image = 'images/noimage.gif',
         container = []
         )
-    storeDoor1.addLock('hardLock')
+    storeDoor1.addLock('lock15')
     allDoors.append(storeDoor1)
     
     woodDoor1 = Door(

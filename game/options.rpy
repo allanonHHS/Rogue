@@ -26,7 +26,7 @@ init -1 python hide:
     ## Эти управляют шириной и высотой экрана.
 
     config.screen_width = 1980
-    config.screen_height = 1024
+    config.screen_height = 1080
 
     ## Это управляет заголовком окна, когда Ren'Py
     ## запущен в оконном режиме.
