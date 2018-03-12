@@ -78,7 +78,7 @@ init python:
         if location.id in ['tavern']:
             if hour in range(12,23):
                 location.people.append(frank)
-                location.description[2] = 'За прилавком стоит сам  Френк - содержатель «Уюта для странника», суровый на вид, седой, с цепким и хитрым взглядом.'
+                location.description[2] = 'За прилавком стоит сам  Френк - содержатель «Уюта для странника», суровый на вид, небритый, с цепким и хитрым взглядом.'
             else:
                 location.people.append(frank_helper)
                 peopleAmount = rand(0,2)

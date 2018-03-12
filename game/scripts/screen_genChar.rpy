@@ -209,7 +209,7 @@ screen levelUp:
             vbox xminimum 300 xmaximum 300:
                 text ('Новое умение ([skillInc]):')
                 for x in allSkills:
-                    if 'player' in x.type and x.id not in player.getAllSkills('id'):
+                    if 'player' in x.type and x.id not in player.getAllSkills('id') and player.getLevel() >= x.level:
                         textbutton x.name:
                             hovered Show('showDescrition', None, x.description)
                             unhovered Hide('showDescrition')

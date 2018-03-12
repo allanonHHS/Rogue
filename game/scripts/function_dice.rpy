@@ -38,11 +38,11 @@ init -21 python:
     def isSuccess(what, where, desc = '', hidden = False, exp = 0):
         experience = ''
         if exp > 0:
-            experience = '\nEXP - ' + str(exp)
+            experience = 'EXP - ' + str(exp) + ' '
         if isinstance(what, list) and isinstance(where, list):
             if what[0] >= where[0]:
                 if hidden == False:
-                    diceTrowsArr.append(desc + what[1] +' Против ' + where[1] + ' = Успех!' + experience)
+                    diceTrowsArr.append(experience + desc + what[1] +' Против ' + where[1] + ' = Успех!')
                 player.incExp(exp)
                 return True
             else:
@@ -52,7 +52,7 @@ init -21 python:
         if isinstance(what, list) and isinstance(where, int):
             if what[0] >= where:
                 if hidden == False:
-                    diceTrowsArr.append(desc + what[1] +' Против ' + str(where) + ' = Успех!' + experience)
+                    diceTrowsArr.append(experience + desc + what[1] +' Против ' + str(where) + ' = Успех!')
                 player.incExp(exp)
                 return True
             else:

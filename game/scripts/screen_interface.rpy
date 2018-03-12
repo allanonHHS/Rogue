@@ -52,6 +52,9 @@ init 10 python:
                     item.find()
                     
     def checkPocket(char):
+        global currChar
+        currChar = char
+        player.incEnergy(-50)
         if 'safe' in curloc.type:
             clrscr()
             renpy.jump('steal_decline')
@@ -61,10 +64,12 @@ init 10 python:
                     clrscr()
                     renpy.jump('steal_catched')
                 else:
+                    player.incEnergy(-50)
                     clrscr()
                     renpy.jump('steal_escapeSTR')
             else:
                 clrscr()
+                player.incEnergy(-50)
                 renpy.jump('steal_escapeDEX')
         else:
             renpy.hide_screen('choiceCharAction')
@@ -73,6 +78,9 @@ init 10 python:
                 
             
     def stealAction(char, item):
+        global currChar
+        currChar = char
+        player.incEnergy(-50)
         if isSuccess( player.useSkill('dexOfHand'), char.useSkill('perception'), 'Воровство: ', exp = 10*char.getLevel()) == False:
             if isSuccess(player.useSkill('dex'), char.useSkill('dex'), 'Попытка увернуться: ') == False:
                 if isSuccess(player.useSkill('str'), char.useSkill('str'), 'Попытка вырваться: ') == False:
@@ -80,9 +88,11 @@ init 10 python:
                     renpy.jump('steal_catched')
                 else:
                     clrscr()
+                    player.incEnergy(-50)
                     renpy.jump('steal_escapeSTR')
             else:
                 clrscr()
+                player.incEnergy(-50)
                 renpy.jump('steal_escapeDEX')
         else:
             player.stealItem(char, item)

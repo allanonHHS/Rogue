@@ -1,6 +1,6 @@
 init 10 python:
     class Location:
-        def __init__(self, id, name, description, image, type, doors = None):
+        def __init__(self, id, name, description, image, type, doors = None, reputation = 0):
             self.id = id # Для удобства определения, что за локация. Мало ли. пригодится.
             self.name = name # Отображаемое имя
             self.description = description # Массив описаний.
@@ -12,6 +12,7 @@ init 10 python:
             self.type = type # Тип локации
             self.people = [] # Массив людей в локации
             self.navigation = [] # Массив локаций, в которые можно перейти
+            self.reputation = reputation
         
         # Функция добавления возможной локации для перехода.
         def addNav(self, locObj):

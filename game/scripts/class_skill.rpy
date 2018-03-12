@@ -7,6 +7,7 @@ init -50 python:
             self.ability = ability
             self.picto = picto
             self.description = description
+            self.level = level
             
         def getPower(self, char):
             level = char.getLevel()
@@ -231,6 +232,7 @@ init -50 python:
             id = 'luck',
             type = ['none','player', 'npc'],
             ability = '',
-            description = 'Кость кидается два раза с выбором наибольшего результата.'
+            description = 'Кость кидается два раза с выбором наибольшего результата.',
+            level = 10
         )
         allSkills.append(luck)
