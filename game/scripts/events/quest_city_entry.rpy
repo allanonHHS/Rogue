@@ -47,6 +47,10 @@ label enterCity:
         guard 'Простого закону. Одиноких баб не пущать! - Стражник кивнул головой в сторону объявлений на большом столбе.'
     else:
         show expression prevloc.image at center,top as bgPic
+        if 'woman' in player.getBodyPart().id:
+            show expression 'images/events/basic/steal_intimidation_1.png' at center,top as tempPic
+        else:
+            show expression 'images/events/basic/steal_intimidation_2.png' at center,top as tempPic
         player.say 'Меня не пропустят просто так...'
     $ move(prevloc)
     

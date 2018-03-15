@@ -54,7 +54,7 @@ init 10 python:
     def checkPocket(char):
         global currChar
         currChar = char
-        player.incEnergy(-50)
+        player.incEnergy(-5)
         if 'safe' in curloc.type:
             clrscr()
             renpy.jump('steal_decline')
@@ -64,12 +64,12 @@ init 10 python:
                     clrscr()
                     renpy.jump('steal_catched')
                 else:
-                    player.incEnergy(-50)
+                    player.incEnergy(-20)
                     clrscr()
                     renpy.jump('steal_escapeSTR')
             else:
                 clrscr()
-                player.incEnergy(-50)
+                player.incEnergy(-20)
                 renpy.jump('steal_escapeDEX')
         else:
             renpy.hide_screen('choiceCharAction')
@@ -80,7 +80,7 @@ init 10 python:
     def stealAction(char, item):
         global currChar
         currChar = char
-        player.incEnergy(-50)
+        player.incEnergy(-5)
         if isSuccess( player.useSkill('dexOfHand'), char.useSkill('perception'), 'Воровство: ', exp = 10*char.getLevel()) == False:
             if isSuccess(player.useSkill('dex'), char.useSkill('dex'), 'Попытка увернуться: ') == False:
                 if isSuccess(player.useSkill('str'), char.useSkill('str'), 'Попытка вырваться: ') == False:
@@ -88,11 +88,11 @@ init 10 python:
                     renpy.jump('steal_catched')
                 else:
                     clrscr()
-                    player.incEnergy(-50)
+                    player.incEnergy(-20)
                     renpy.jump('steal_escapeSTR')
             else:
                 clrscr()
-                player.incEnergy(-50)
+                player.incEnergy(-20)
                 renpy.jump('steal_escapeDEX')
         else:
             player.stealItem(char, item)
@@ -270,9 +270,9 @@ screen stats(locObj):
                     unhovered Hide('detailedStats')
                     action NullAction
                 text(player.name)
-                text('HP ' + str(player.getHP()) + ' / ' + str(player.stats.maxHP)) style 'param'
-                text('EXP ' + str(player.getExp()) + ' / ' + str(player.getNextLevelExp())) style 'param'
-                text('Энергичность ' + str(player.getEnergy()) + ' / ' + str(player.getMaxEnergy())) style 'param'
+                text('HP ' + str(max(0,player.getHP())) + ' / ' + str(player.stats.maxHP)) style 'param'
+                text('EXP ' + str(max(0,player.getExp())) + ' / ' + str(player.getNextLevelExp())) style 'param'
+                text('Энергичность ' + str(max(0,player.getEnergy())) + ' / ' + str(player.getMaxEnergy())) style 'param'
                 if statInc > 0 or skillInc > 0:
                     textbutton 'Повысить уровень' action Show('levelUp')
                 else:

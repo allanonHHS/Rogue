@@ -134,6 +134,9 @@ init python:
         renpy.scene(layer='screens')
         
     def checkTriggers():
+        if player.getHP() <= 0:
+            renpy.jump('death')
+        
         if trigger[1] == 0 and curloc.id in ['severArea','zapadArea','ugArea'] and player.getBodyPart().id == 'manClothes' and trigger[18] != 1:
             renpy.jump('enterCityMan')
             

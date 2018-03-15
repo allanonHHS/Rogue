@@ -189,7 +189,7 @@ init 10 python:
             name = 'Южный район',
             description = ['Южный район.', 'todo'],
             type = ['public','outside'],
-            image = 'images/locations/severGate.png')
+            image = 'images/locations/ugArea.png')
         allLocs.append(ugArea)
         
         zapadArea = Location(
@@ -197,7 +197,7 @@ init 10 python:
             name = 'Западный район',
             description = ['Западный район.', 'todo'],
             type = ['public','outside'],
-            image = 'images/locations/severGate.png')
+            image = 'images/locations/zapadArea.png')
         allLocs.append(zapadArea)
         
         severArea.addNav(severGate)
